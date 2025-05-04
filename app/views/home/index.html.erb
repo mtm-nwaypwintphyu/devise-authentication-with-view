@@ -1,0 +1,27 @@
+
+<div  
+  <div>
+    <div>
+      <h1>Welcome to the Home Page</h1>
+    </div>
+  </div>
+  <div>
+    <div>
+      <div>
+        <div>
+          <h5>Explore Users</h5>
+          <%= link_to "View Users", users_path %>
+          <%= link_to "View Posts", posts_path %>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div>
+        <div>
+          <%= button_to "Logout", destroy_user_session_path, method: :delete %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

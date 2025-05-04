@@ -1,0 +1,19 @@
+<h3 class="mt-4">User Information</h3>
+<table>
+  <tr>
+    <th>Name</th>
+    <td><%= @user.full_name %></td>
+  </tr>
+  <tr>
+    <th>Email</th>
+    <td><%= @user.formatted_email %></td>
+  </tr>
+  <tr>
+    <th>Created Date</th>
+    <td><%= @user.formatted_created_at %></td>
+  </tr>
+  <tr>
+    <th>Updated Date</th>
+    <td><%= @user.formatted_updated_at %></td>
+  </tr>
+</table>

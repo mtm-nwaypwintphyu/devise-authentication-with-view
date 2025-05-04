@@ -1,0 +1,49 @@
+<h2>Sign up</h2>
+
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+  <div class="field">
+    <%= f.label :first_name %><br />
+    <%= f.text_field :first_name %>
+    <% if resource.errors[:first_name].any? %>
+      <div style="color: red;"><%= resource.errors[:first_name].first %></div>
+    <% end %>
+  </div>
+
+  <div class="field">
+    <%= f.label :last_name %><br />
+    <%= f.text_field :last_name %>
+    <% if resource.errors[:last_name].any? %>
+      <div style="color: red;"><%= resource.errors[:last_name].first %></div>
+    <% end %>
+  </div>
+
+  <div class="field">
+    <%= f.label :email %><br />
+    <%= f.email_field :email %>
+    <% if resource.errors[:email].any? %>
+      <div style="color: red;"><%= resource.errors[:email].first %></div>
+    <% end %>
+  </div>
+
+  <div class="field">
+    <%= f.label :password %> <i>(6 characters minimum)</i><br />
+    <%= f.password_field :password %>
+    <% if resource.errors[:password].any? %>
+      <div style="color: red;"><%= resource.errors[:password].first %></div>
+    <% end %>
+  </div>
+
+  <div class="field">
+    <%= f.label :password_confirmation %><br />
+    <%= f.password_field :password_confirmation %>
+    <% if resource.errors[:password_confirmation].any? %>
+      <div style="color: red;"><%= resource.errors[:password_confirmation].first %></div>
+    <% end %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "Sign up" %>
+  </div>
+<% end %>
+
+<%= render "devise/shared/links" %>

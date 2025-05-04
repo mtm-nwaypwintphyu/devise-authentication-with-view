@@ -1,0 +1,20 @@
+<%= form_with model: @post, local: true do |form| %>
+  <%= form.label :title %><br>
+  <%= form.text_field :title %>
+  <% if @post.errors[:title].any? %>
+    <div style="color:red">
+      <%= @post.errors[:title].join(",")%>
+    </div>
+  <% end %>
+
+  <br><br>
+  <%= form.label :content %><br>
+  <%= form.text_area :content %><br>
+  <% if @post.errors[:content].any? %>
+    <div style="color:red">
+      <%= @post.errors[:content].join(",") %>
+    </div>
+  <% end %>
+
+  <%= form.submit "Create post", class: "btn btn-primary" %>
+<% end %>

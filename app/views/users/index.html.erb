@@ -1,0 +1,24 @@
+
+<div class="container mt-5">
+  <% if notice %>
+    <p><%= notice %></p>
+  <% end %>
+
+  <h1>Users</h1>
+
+  <div id="users">
+    <% @users.each do |user| %>
+      <div>
+        <table>
+          <tr>
+            <td><%= user.full_name %></td>
+            <td><%= link_to "Detail", user_path(user) %></td>
+          </tr>
+        </table>
+        <hr>
+      </div>
+    <% end %>
+      <div><%= link_to "Back", users_path %></div>
+  </div>
+</div>
+

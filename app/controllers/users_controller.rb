@@ -1,0 +1,57 @@
+class UsersController < ApplicationController
+  before_action :authenticate_user!
+
+  def index
+    @users = User.all.decorate
+  end
+
+  def show
+    @user = User.find(params[:id]).decorate
+  end
+
+  def edit 
+    @user = User.find(params[:id])
+  end
+
+  def update
+    @user = User.find(params[:id])
+    @user_usecase = Users::UserUsecase.new(user_params)
+    response = @user_usecase.update(@user)
+    respond_to do |format|
+      if response[:status] == :updated
+
+        format.html { redirect_to users_url, notice: "Updated" }
+        format.json { render :show, status: :ok, location: @user }
+      else
+     
+
+        @user.errors.add(:first_name, response[:errors][:first_name]) if response[:errors][:first_name]
+        @user.errors.add(:last_name, response[:errors][:last_name]) if response[:errors][:last_name]
+        @user.errors.add(:email, response[:errors][:email]) if response[:errors][:email]
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def destroy
+    @usecase = Users::UserUsecase.new(nil)
+    respond_to do |format|
+      if @usecase.destroy(params[:id])
+        format.html { redirect_to users_url, notice: "User deleted successfully." } 
+        format.json { render :show, status: :ok, location: @user }
+      end
+    end
+  end
+
+  private
+
+  def set_user
+    @user = User.find(params[:id])
+  end
+
+  def user_params
+    params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation)
+  end
+
+end

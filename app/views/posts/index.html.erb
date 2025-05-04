@@ -1,0 +1,25 @@
+
+<div>
+  <% if notice %>
+    <p><%= notice %></p>
+  <% end %>
+
+  <h1>Posts</h1>
+
+  <div id="posts">
+    <% @posts.each do |post| %>
+      <div>
+        <table>
+          <tr>
+            <td><%= post.title %></td>
+            <td><%= link_to "Detail", post_path(post)%></td>
+          </tr>
+        </table>
+        <hr>
+      </div>
+    <% end %>
+
+    <%= link_to "Create", new_post_path %>
+  </div>
+</div>
+

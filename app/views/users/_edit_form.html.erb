@@ -1,0 +1,35 @@
+<%= form_with model: user, url: user_path(user), method: :patch do |form| %>
+  <div>
+    <%= form.label :first_name, "First Name" %>
+    <%= form.text_field :first_name %>
+    <% if @user.errors[:first_name].any? %>
+      <div style="color:red">
+        <%= @user.errors[:first_name].join(",")%>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <%= form.label :last_name, "Last Name" %>
+    <%= form.text_field :last_name %>
+    <% if @user.errors[:last_name].any? %>
+      <div style="color:red">
+        <%= @user.errors[:last_name].join(",")%>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <%= form.label :email, "Email" %>
+    <%= form.text_field :email %>
+    <% if @user.errors[:email].any? %>
+      <div style="color:red">
+        <%= @user.errors[:email].join(",")%>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <%= form.submit "Update User" %>
+  </div>
+<% end %>
