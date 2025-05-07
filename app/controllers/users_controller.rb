@@ -20,7 +20,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if response[:status] == :updated
 
-        format.html { redirect_to users_url, notice: "Updated" }
+        format.html { redirect_to users_url, notice: "User updated successfully." }
         format.json { render :show, status: :ok, location: @user }
       else
      

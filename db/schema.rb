@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_30_072109) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_07_065519) do
   create_table "posts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
     t.string "content"
@@ -31,6 +31,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_072109) do
     t.string "first_name"
     t.string "last_name"
     t.string "jti"
+    t.string "provider"
+    t.string "uid"
+    t.text "google_oauth2_token"
+    t.string "google_oauth2_refresh_token"
+    t.datetime "token_expires_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

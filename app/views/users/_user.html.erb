@@ -1,19 +1,27 @@
-<h3 class="mt-4">User Information</h3>
-<table>
-  <tr>
-    <th>Name</th>
-    <td><%= @user.full_name %></td>
-  </tr>
-  <tr>
-    <th>Email</th>
-    <td><%= @user.formatted_email %></td>
-  </tr>
-  <tr>
-    <th>Created Date</th>
-    <td><%= @user.formatted_created_at %></td>
-  </tr>
-  <tr>
-    <th>Updated Date</th>
-    <td><%= @user.formatted_updated_at %></td>
-  </tr>
+
+
+<div class="col-10 rounded m-auto">
+<table class="table table-bordered table-hover text-center">
+  <thead class="table-success">
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Created date</th>
+      <th>Updated date</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><%= @user.full_name %></td>
+        <td><%= @user.formatted_email %></td>
+        <td><%= @user.formatted_created_at %></td>
+        <td><%= @user.formatted_updated_at %></td>
+        <td class="text-center d-flex">
+          <%= link_to "Edit", edit_user_path(@user), class: "btn btn-sm btn-success me-2" %>
+          <%= button_to "Delete", @user, method: :delete, class: "btn btn-sm btn-danger" %>
+        </td>
+      </tr>
+  </tbody>
 </table>
+</div>

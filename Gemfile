@@ -19,6 +19,19 @@ gem 'draper'
 # to use form for each model
 gem 'virtus'
 
+# to use oauth
+gem 'omniauth'
+
+gem 'omniauth-google-oauth2'
+
+gem "omniauth-rails_csrf_protection"
+
+gem 'dotenv-rails', groups: [:development, :test]
+
+# google calendar
+# gem 'google-api-client', require: 'google/apis/calendar_v3'
+
+
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Use mysql as the database for Active Record
@@ -66,6 +79,9 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # mail preview
+  gem 'letter_opener'
 end
 
 group :development do

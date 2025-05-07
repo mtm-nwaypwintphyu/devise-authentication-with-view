@@ -14,7 +14,7 @@ class PostsController < ApplicationController
       @post = Posts:: PostUsecase.new(post_params.merge(user_id: current_user.id))
       response = @post.create
       if response[:status] == :created
-        format.html {redirect_to posts_path, notice: "Created"}
+        format.html {redirect_to posts_path, notice: "Post created successfully."}
       else
         @post = Posts::PostForm.new(post_params.merge(user_id: current_user.id))
         @post.errors.add(:title, response[:errors][:title]) if response[:errors][:title]
@@ -26,10 +26,12 @@ class PostsController < ApplicationController
 
   def show
     @post = Post.find_by(id: params[:id])
+    @post.user = @post.user.decorate
   end
 
   def edit
     @post = Post.find_by(id: params[:id])
+    @post.user = @post.user.decorate
   end
 
   def update
@@ -39,7 +41,7 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       if response[:status] == :updated
-        format.html { redirect_to posts_path, notice: 'Post was successfully updated.' }
+        format.html { redirect_to posts_path, notice: 'Post updated successfully.' }
         format.json { render :show, status: :ok, location: @post }
       else
         @post = Posts::PostForm.new(post_params.merge(user_id: current_user.id))

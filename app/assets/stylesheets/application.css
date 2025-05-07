@@ -8,3 +8,32 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+ .google-btn {
+
+  width:100%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 24px;
+  text-decoration: none;
+  color: #444;
+  background-color: white;
+  font-weight: 500;
+  font-size: 14px;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.google-btn:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+}
+
+.google-icon {
+  height: 20px;
+  width: 20px;
+  margin-right: 8px;
+}
+

@@ -1,4 +1,8 @@
 import { Application } from "@hotwired/stimulus"
+// to use bootstrap
+import "bootstrap"
+import "bootstrap/dist/css/bootstrap.min.css"
+
 
 const application = Application.start()
 

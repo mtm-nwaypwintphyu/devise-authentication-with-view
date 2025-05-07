@@ -1,8 +1,9 @@
-<h1>Editing user</h1>
-  <%= render 'edit_form', user: @user %>
-<br>
 
-<div>
-  <%= link_to "Back to users", users_path %>
+
+<div class="container col-7 mt-5 p-3 rounded" style="background-color: rgba(255, 255, 0, 0.292);">
+<h2 class="mb-4 text-success text-center">Editing user</h2>
+<%= link_to "Back", user_path(@user), class: "btn btn-sm btn-secondary" %>
+  <%= render 'edit_form', user: @user %>
 </div>
+
 

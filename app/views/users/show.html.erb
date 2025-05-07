@@ -1,11 +1,6 @@
-<h1>User Details</h1>
 
+<div class="container col-7 mt-5 p-3 rounded" style="background-color: rgba(255, 255, 0, 0.292);">
+<h2 class="mb-4 text-success text-center">User Detail</h2>
+<%= link_to "Back", users_path, class: "btn btn-sm btn-secondary" %>
 <%= render @user %>
-
-<div class="mt-4">
-  <%= link_to "Edit", edit_user_path(@user)%> |
-  <%= link_to "Back", users_path %>
-  <%= button_to "Delete", @user, method: :delete%>
 </div>
-
-<hr>
