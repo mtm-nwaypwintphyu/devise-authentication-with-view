@@ -1,14 +1,35 @@
-<div class="container form-box col-4 px-5 pt-3 pb-5 mt-3 rounded" style="background-color:  rgba(255, 255, 0, 0.292);">
+<div class="container form-box col-4 px-5 pt-3 pb-5 mt-3 rounded" style="background-color: rgba(255, 255, 0, 0.292);">
   <h2 class="text-center text-success">Log in</h2>
+
+  <% if flash[:alert] %>
+    <div class="alert my-2 p-2 alert-danger">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
+
   <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+    
     <div class="form-group mb-4">
       <%= f.label :email, class: "font-weight-bold" %>
       <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", placeholder: "Enter your email" %>
+
+      <!-- Show error message for email only if there are errors after form submission -->
+      <% if resource.errors[:email].any? && resource.email.present? %>
+        <div class="alert alert-danger mt-2">
+          <%= resource.errors[:email].join(", ") %>
+        </div>
+      <% end %>
     </div>
 
     <div class="form-group my-4">
       <%= f.label :password, class: "font-weight-bold" %>
       <%= f.password_field :password, autocomplete: "current-password", class: "form-control", placeholder: "Enter your password" %>
+
+      <% if resource.errors[:password].any? && resource.password.present? %>
+        <div class="alert alert-danger mt-2">
+          <%= resource.errors[:password].join(", ") %>
+        </div>
+      <% end %>
     </div>
 
     <% if devise_mapping.rememberable? %>
@@ -22,7 +43,6 @@
       <%= f.submit "Log in", class: "btn text-light btn-block w-100 bg-success" %>
     </div>
   <% end %>
- <%= render "devise/shared/links", class: "text-center" %>
+
+  <%= render "devise/shared/links", class: "text-center" %>
 </div>
-
-

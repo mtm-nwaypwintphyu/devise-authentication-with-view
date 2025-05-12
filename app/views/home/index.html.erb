@@ -1,31 +1,29 @@
-<div class="container col-7 mt-5 p-4 rounded" style="background-color: rgba(255, 255, 0, 0.292);">
-
- 
-
-  <div class="text-center mb-4">
+ <%= render 'layouts/navbar' %>
+<div class="container-fluid  p-5 rounded" style="height:700px; background-color: rgba(255, 255, 0, 0.292);">
+  <% if flash[:error] %>
+    <div class="alert alert-danger alert-dismissible fade show mx-auto text-center p-3 small col-8 " style=" font-size: 0.9rem;" role="alert">
+      <%= flash[:error] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="transform: scale(0.7); margin-top: -4px;"></button>
+    </div>
+  <% end %>
+  <% if notice %>
+    <div class="alert alert-success alert-dismissible fade show mx-auto text-center p-3 small col-8 " style=" font-size: 0.9rem;" role="alert">
+      <%= notice %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="transform: scale(0.7); margin-top: -4px;"></button>
+    </div>
+  <% end %>
+  <div class="text-center mb-5">
     <h3 class="text-success">Welcome to MyWebsite</h3>
-    <% if user_signed_in? %>
-      <p class="text-muted">Hi, <%= current_user.first_name %> <%= current_user.last_name %>!</p>
-    <% else %>
-      <p class="text-danger">You are not logged in.</p>
-    <% end %>
   </div>
 
   <div class="row text-center">
     <div class="col-8 m-auto mb-4">
       <div class="card shadow-sm p-4">
         <h5 class="mb-3">Explore</h5>
-        <%= link_to "View Users", users_path, class: "btn btn-outline-success mb-3 w-100" %>
-        <%= link_to "View Posts", posts_path, class: "btn btn-outline-secondary w-100" %>
+        <%= link_to "View Users", users_path, class: "btn btn-outline-success mb-4 col-6 m-auto" %>
+        <%= link_to "View Posts", posts_path, class: "btn btn-outline-secondary mb-4 col-6 m-auto" %>
+        <%= button_to 'Calendar', calendar_index_path, method: :get, class: "btn btn-outline-warning col-6 m-auto" %>
       </div>
     </div>
   </div>
-  <% if user_signed_in? %>
-    <div class="d-flex justify-content-end">
-      <%= button_to destroy_user_session_path, method: :delete, class: "btn btn-none text-decoration-none text-success mb-2 d-flex align-items-center gap-2" do %>
-        <i class="fas fa-sign-out-alt"></i>
-        Logout
-      <% end %>
-    </div>
-  <% end %>
 </div>

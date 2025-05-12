@@ -1,0 +1,58 @@
+
+<%= render 'layouts/navbar' %>
+<div class="container-fluid  p-5 rounded" style="height:700px; background-color: rgba(255, 255, 0, 0.292);">
+  <h2 class="mb-4 text-success text-center">Editing Event</h2>
+  <div class="d-flex col-6 my-2 m-auto">
+    <%= link_to "Back to All Events", all_events_path, class: "btn btn-sm btn-success" %>
+  </div>
+  <div class="col-6 bg-light rounded p-3 m-auto">
+    <%= form_with url: update_event_calendar_index_path(@event), method: :post, local: true do %>
+      <%= hidden_field_tag "event[id]", @event.id %>
+
+      <div class="my-4 form-group">
+        <%= label_tag "event[name]", "Event Name" %>
+        <%= text_field_tag "event[name]", @event.summary, class: "form-control" %>
+         <% if flash[:errors] && flash[:errors]["name"] %>
+          <div class="text-danger">
+            <%= flash[:errors]["name"] %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="my-4 form-group">
+        <%= label_tag "event[description]", "Event Description" %>
+        <%= text_area_tag "event[description]", @event.description, class: "form-control" %>
+        <% if flash[:errors] && flash[:errors]["description"] %>
+          <div class="text-danger">
+            <%= flash[:errors]["description"] %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="my-4 form-group">
+        <%= label_tag "event[start_time]", "Start Time" %>
+        <%= datetime_local_field_tag "event[start_time]", @event.start.date_time.to_datetime.strftime("%Y-%m-%dT%H:%M"), class: "form-control" %>
+        <% if flash[:errors] && flash[:errors]["start_time"] %>
+          <div class="text-danger">
+            <%= flash[:errors]["start_time"] %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="my-4 form-group">
+        <%= label_tag "event[end_time]", "End Time" %>
+        <%= datetime_local_field_tag "event[end_time]", @event.end.date_time.to_datetime.strftime("%Y-%m-%dT%H:%M"), class: "form-control" %>
+         <% if flash[:errors] && flash[:errors]["end_time"] %>
+          <div class="text-danger">
+            <%= flash[:errors]["end_time"] %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="form-group d-flex w-100 justify-content-end my-3">
+        <%= submit_tag "Update Event", class: "btn btn-sm btn-success" %>
+      </div>
+    <% end %>
+  </div>
+  
+</div>

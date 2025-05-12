@@ -1,6 +1,9 @@
 
-<div class="container col-7 mt-5 p-3 rounded" style="background-color: rgba(255, 255, 0, 0.292);">
+<%= render 'layouts/navbar' %>
+<div class="container-fluid  p-5 rounded" style="height:700px; background-color: rgba(255, 255, 0, 0.292);">
 <h2 class="mb-4 text-success text-center">User Detail</h2>
-<%= link_to "Back", users_path, class: "btn btn-sm btn-secondary" %>
+<div class="col-8 m-auto mb-2">
+  <%= link_to "Back", users_path, class: "btn btn-sm btn-secondary" %>
+</div>
 <%= render @user %>
 </div>

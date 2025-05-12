@@ -1,9 +1,10 @@
 
 
-
-
-<div class="container col-7 mt-5 p-3 rounded" style="background-color: rgba(255, 255, 0, 0.292);">
+<%= render 'layouts/navbar' %>
+<div class="container-fluid  p-5 rounded" style="height:700px; background-color: rgba(255, 255, 0, 0.292);">
   <h2 class="mb-4 text-success text-center">Post Detail</h2>
-  <%= link_to "Back", posts_path, class: "btn btn-sm btn-secondary" %>
+  <div class="m-auto col-10">
+    <%= link_to "Back", posts_path, class: "btn btn-sm btn-secondary" %>
+  </div>
   <%= render @post %>
 </div>

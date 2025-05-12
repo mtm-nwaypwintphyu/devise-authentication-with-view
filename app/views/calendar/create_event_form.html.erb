@@ -1,0 +1,64 @@
+<%= render 'layouts/navbar' %>
+<div class="container-fluid  p-5 rounded" style=" background-color: rgba(255, 255, 0, 0.292);">
+  <% if flash[:error] %>
+    <div class="alert alert-danger">
+      <%= flash[:error] %>
+    </div>
+  <% end %>
+
+  <div class="text-center mb-4">
+    <h3 class="text-success">Create Event</h3>
+  </div>
+  
+  <div class="d-flex col-7 m-auto my-3">
+    <%= link_to "Back to Calendar", calendar_index_path, class: "btn btn-sm btn-success" %>
+  </div>
+  <div class="col-7 m-auto bg-light rounded py-3 px-5">
+    <%= form_for @event, url: create_event_calendar_index_path, html: { method: :post } do |f| %>
+      <div class="form-group my-4">
+        <%= f.label :name, "Event Name" %>
+        <%= f.text_field :name, class: "form-control" %>
+        <% if flash[:errors] && flash[:errors]["name"] %>
+          <div class="text-danger">
+            <%= flash[:errors]["name"]%>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="form-group my-4">
+        <%= f.label :description, "Event Description" %>
+        <%= f.text_area :description, class: "form-control" %>
+        <% if flash[:errors] && flash[:errors]["description"] %>
+          <div class="text-danger">
+            <%= flash[:errors]["description"]%>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="form-group my-4">
+        <%= f.label :start_time, "Start Time" %>
+        <%= f.datetime_local_field :start_time, class: "form-control" %>
+        <% if flash[:errors] && flash[:errors]["start_time"] %>
+          <div class="text-danger">
+            <%= flash[:errors]["start_time"]%>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="form-group my-4">
+        <%= f.label :end_time, "End Time" %>
+        <%= f.datetime_local_field :end_time, class: "form-control" %>
+        <% if flash[:errors] && flash[:errors]["end_time"] %>
+          <div class="text-danger">
+            <%= flash[:errors]["end_time"]%>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="form-group my-4 d-flex w-100 justify-content-end my-3">
+        <%= f.submit "Create Event", class: "btn btn-success" %>
+      </div>
+    <% end %>
+  </div>
+
+</div>

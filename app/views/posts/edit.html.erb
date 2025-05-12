@@ -1,6 +1,10 @@
-<div class="container col-7 mt-5 p-3 rounded" style="background-color: rgba(255, 255, 0, 0.292);">
-<h2 class="mb-4 text-success text-center">Editing Post</h2>
-<%= link_to "Back", @post.persisted? ? post_path(@post) : posts_path, class: "btn btn-sm btn-secondary" %>
+
+<%= render 'layouts/navbar' %>
+<div class="container-fluid  p-5 rounded" style="height:700px; background-color: rgba(255, 255, 0, 0.292);">
+  <h2 class="mb-4 text-success text-center">Editing Post</h2>
+  <div class="m-auto col-6 mb-2">
+    <%= link_to "Back", @post.persisted? ? post_path(@post) : posts_path, class: "btn btn-sm btn-secondary" %>
+  </div>
   <%= render 'edit_form', post: @post %>
 </div>
 

@@ -28,9 +28,7 @@ gem "omniauth-rails_csrf_protection"
 
 gem 'dotenv-rails', groups: [:development, :test]
 
-# google calendar
-# gem 'google-api-client', require: 'google/apis/calendar_v3'
-
+gem 'google-apis-calendar_v3'
 
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"

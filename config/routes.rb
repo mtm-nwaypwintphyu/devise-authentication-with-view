@@ -2,7 +2,8 @@ Rails.application.routes.draw do
   get "home/index"
   # devise_for :users, controllers: { registrations: 'api/users/registrations' }
   devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
-  
+
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -16,9 +17,23 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
-  resources :users, only: [:index, :show, :edit, :update, :destroy]
+  resources :users, only: [:index, :show, :edit, :update, :destroy] 
+
+  resources :calendar, only: [:index] do
+    collection do
+      get :create_event_form
+      post :create_event
+      get :event
+      get :edit_event_form
+      post :update_event
+      post :delete_event
+    end
+  end
+
+  get 'calendar/all_events', to: 'calendar#all_events', as: :all_events
+  get 'calendar/all_holidays', to: 'calendar#all_holidays', as: :all_holidays
+  
   resources :posts
   root to: "home#index"
-
 
 end
