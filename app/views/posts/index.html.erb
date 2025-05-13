@@ -9,7 +9,11 @@
   <% end %>
     <div class="d-flex justify-content-between mb-2 col-8 m-auto">
       <%= link_to "Back", root_path, class: "btn btn-sm btn-secondary" %>
-      <%= link_to "+ Create Post", new_post_path, class: "btn btn-sm btn-success" %>
+      <div class="col-5 d-flex justify-content-end">
+        <%= link_to "+ Upload Post", upload_csv_form_posts_path, class: "btn btn-sm mx-1 btn-success" %>
+        <%= link_to "+ Create Post", new_post_path, class: "btn btn-sm btn-success me-1" %>
+        <%= link_to "Download Post", download_posts_path, class: "btn btn-sm btn-success" %>
+      </div>
     </div>
 
   <div class="col-8 rounded m-auto">
@@ -21,7 +25,13 @@
         </tr>
       </thead>
       <tbody>
+        <% if @posts.empty? %>
+          <tr>
+            <td colspan="2" class="text-center">No posts available</td>
+          </tr>
+        <% end %>
         <% @posts.each do |post| %>
+         
           <tr>
             <td><%= post.title %></td>
             <td><%= link_to "Detail", post_path(post), class: "btn btn-sm btn-outline-success" %></td>

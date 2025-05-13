@@ -21,6 +21,11 @@
         </tr>
       </thead>
       <tbody>
+      <% if @users.empty? %>
+        <tr>
+          <td colspan="2" class="text-center">No users available</td>   
+        </tr>
+      <% end %>
         <% @users.each do |user| %>
           <tr>
             <td><%= user.full_name %></td>

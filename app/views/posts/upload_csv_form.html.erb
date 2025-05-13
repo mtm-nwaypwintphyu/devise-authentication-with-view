@@ -1,0 +1,22 @@
+<div class="container mt-5 p-3 rounded" style="background-color: rgba(255, 255, 0, 0.292);">
+  <h2 class="mb-4 text-success text-center">Post CSV Upload</h2>
+
+  <div class="col-8 m-auto">
+    <div class="d-flex justify-content-between mb-2">
+      <%= link_to "Back", posts_path, class: "btn btn-sm btn-secondary mb-2" %>
+      <%= link_to "Download Sample Csv", download_sample_csv_posts_path, class: "btn btn-sm btn-warning mb-2" %>
+    </div>
+    <%= form_with url: upload_csv_posts_path, method: :post, local: true, enctype: "multipart/form-data" do |f| %>
+      <div class="form-group">
+        <%= f.label :csv_file, "Choose CSV file", class: "form-label" %>
+        <%= f.file_field :csv_file, class: "form-control" %>
+         <% if notice %>
+            <p class="text-danger mt-1"><%= notice %></p>
+         <% end %>
+      </div>
+      <div class="d-flex justify-content-end">
+        <%= f.submit "Upload", class: "btn btn-sm btn-success mt-3" %>
+      </div>
+    <% end %>
+  </div>
+</div>

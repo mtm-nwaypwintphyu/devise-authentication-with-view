@@ -33,7 +33,14 @@ Rails.application.routes.draw do
   get 'calendar/all_events', to: 'calendar#all_events', as: :all_events
   get 'calendar/all_holidays', to: 'calendar#all_holidays', as: :all_holidays
   
-  resources :posts
+  resources :posts do
+    collection do
+      get :upload_csv_form
+      get :download_sample_csv
+      post :upload_csv  
+      get :download
+    end
+  end
   root to: "home#index"
 
 end
