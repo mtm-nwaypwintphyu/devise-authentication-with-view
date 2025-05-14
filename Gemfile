@@ -80,6 +80,8 @@ group :development, :test do
 
   # mail preview
   gem 'letter_opener'
+
+  gem 'faker'
 end
 
 group :development do
