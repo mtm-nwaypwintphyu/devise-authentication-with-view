@@ -12,19 +12,27 @@ class UsersController < ApplicationController
   def edit 
     @user = User.find(params[:id])
   end
-
+  
   def update
     @user = User.find(params[:id])
     @user_usecase = Users::UserUsecase.new(user_params)
     response = @user_usecase.update(@user)
     respond_to do |format|
       if response[:status] == :updated
-
+       AnalyticsEventCreateJob.perform_async(
+          current_user.id,
+          'user update',
+          {
+            'user_id' => @user.id,
+            'first_name' => @user.first_name,
+            'last_name' => @user.last_name,
+            'email' => @user.email
+          }
+        )
         format.html { redirect_to users_url, notice: "User updated successfully." }
         format.json { render :show, status: :ok, location: @user }
       else
      
-
         @user.errors.add(:first_name, response[:errors][:first_name]) if response[:errors][:first_name]
         @user.errors.add(:last_name, response[:errors][:last_name]) if response[:errors][:last_name]
         @user.errors.add(:email, response[:errors][:email]) if response[:errors][:email]
@@ -35,9 +43,20 @@ class UsersController < ApplicationController
   end
 
   def destroy
+    @user = User.find(params[:id])
     @usecase = Users::UserUsecase.new(nil)
     respond_to do |format|
       if @usecase.destroy(params[:id])
+        AnalyticsEventCreateJob.perform_async(
+          current_user.id,
+          'user delete',
+          {
+            'user_id' => @user.id,
+            'first_name' => @user.first_name,
+            'last_name' => @user.last_name,
+            'email' => @user.email
+          }
+        )
         format.html { redirect_to users_url, notice: "User deleted successfully." } 
         format.json { render :show, status: :ok, location: @user }
       end

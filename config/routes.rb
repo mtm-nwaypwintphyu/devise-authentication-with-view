@@ -1,7 +1,12 @@
 Rails.application.routes.draw do
   get "home/index"
   # devise_for :users, controllers: { registrations: 'api/users/registrations' }
-  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
+
+  devise_for :users, controllers: { 
+    sessions: 'users/sessions',
+    registrations: 'users/registrations',
+    omniauth_callbacks: 'users/omniauth_callbacks' 
+  }
 
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -32,8 +37,20 @@ Rails.application.routes.draw do
 
   get 'calendar/all_events', to: 'calendar#all_events', as: :all_events
   get 'calendar/all_holidays', to: 'calendar#all_holidays', as: :all_holidays
-  
+
+  get 'reports/generate_pdf', to: 'reports#generate_pdf'
+  get 'download_pdf', to: 'reports#download_pdf', as: :download_pdf
+
+  # download excel
+  get '/download_users_excel', to: 'reports#download_excel'
+
   resources :posts
   root to: "home#index"
+
+  resources :users do
+    member do
+      get :export_csv
+    end
+  end
 
 end

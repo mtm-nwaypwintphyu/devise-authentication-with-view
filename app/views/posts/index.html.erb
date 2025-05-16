@@ -1,5 +1,5 @@
 <%= render 'layouts/navbar' %>
-<div class="container-fluid  p-5 rounded" style="height:700px; background-color: rgba(255, 255, 0, 0.292);">
+<div class="container-fluid  p-5 rounded" style="background-color: rgba(255, 255, 0, 0.292);">
   <h2 class="mb-4 text-success text-center">Posts List</h2>
   <% if notice %>
     <div class="alert alert-success alert-dismissible fade show mx-auto text-center col-8 p-2 small" style=" font-size: 0.9rem;" role="alert">
@@ -8,8 +8,13 @@
     </div>
   <% end %>
     <div class="d-flex justify-content-between mb-2 col-8 m-auto">
-      <%= link_to "Back", root_path, class: "btn btn-sm btn-secondary" %>
-      <%= link_to "+ Create Post", new_post_path, class: "btn btn-sm btn-success" %>
+      <div>
+        <%= link_to "Back", root_path, class: "btn btn-sm btn-secondary" %>
+      </div>
+      <div class="col-5 d-flex justify-content-end d-flex">
+         <%= link_to "+ Create Post", new_post_path, class: "btn me-1 btn-sm btn-success" %>
+        <%= link_to "Download PDF", download_pdf_path,  class: "btn btn-sm btn-success" %>
+      </div>
     </div>
 
   <div class="col-8 rounded m-auto">

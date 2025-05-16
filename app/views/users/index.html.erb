@@ -1,5 +1,5 @@
 <%= render 'layouts/navbar' %>
-<div class="container-fluid  p-5 rounded" style="height:700px; background-color: rgba(255, 255, 0, 0.292);">
+<div class="container-fluid  p-5 rounded" style="background-color: rgba(255, 255, 0, 0.292);">
   <h2 class="mb-4 text-success text-center">Users List</h2>
   <% if notice %>
     <div class="alert alert-success col-7 alert-dismissible fade show mx-auto text-center p-2 small" role="alert">
@@ -10,6 +10,7 @@
   
   <div class="d-flex justify-content-between mb-2 col-7 m-auto">
     <%= link_to "Back", root_path, class: "btn btn-sm btn-secondary" %>
+    <%= link_to "Download Excel", download_users_excel_path, class: "btn btn-sm btn-outline-success" %>
   </div>
 
   <div class="col-7 rounded m-auto">

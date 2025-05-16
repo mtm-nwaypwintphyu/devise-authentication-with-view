@@ -5,6 +5,8 @@ class User < ApplicationRecord
   include Devise::JWT::RevocationStrategies::JTIMatcher
   has_many :posts, dependent: :destroy
 
+  # after_sign_in :send_weekly_digest
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [:google_oauth2]
@@ -37,4 +39,9 @@ class User < ApplicationRecord
       expires_at: token_expires_at.to_i
     )
   end  
+
+  # sent weekly created posts
+  def send_weekly_digest
+    WeeklyDigestJob.perform_later(self.id)
+  end
 end

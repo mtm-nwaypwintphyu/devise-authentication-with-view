@@ -29,5 +29,8 @@ module DataxSample
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore, key: '_my_session'
 
+    # for active jobs'
+    # config.active_job.queue_adapter = :async
+    config.active_job.queue_adapter = :sidekiq
   end
 end

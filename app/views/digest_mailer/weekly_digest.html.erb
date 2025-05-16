@@ -1,0 +1,12 @@
+<h1>Weekly Digest</h1>
+<p>Here are the posts you created in this week.</p>
+
+<ul>
+  <% @posts.each do |post| %>
+    <li>
+      <strong><%= post.title %></strong><br>
+      <%= post.content %><br>
+      <small><%= post.created_at.strftime("%B %d, %Y") %></small>
+    </li>
+  <% end %>
+</ul>

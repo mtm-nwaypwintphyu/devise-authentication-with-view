@@ -30,6 +30,20 @@ gem 'dotenv-rails', groups: [:development, :test]
 
 gem 'google-apis-calendar_v3'
 
+
+# pdf generator
+gem 'prawn'
+
+# excel generator
+gem 'axlsx_rails'
+
+# background jobs
+
+gem 'sidekiq'
+
+gem 'redis'
+
+
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Use mysql as the database for Active Record
