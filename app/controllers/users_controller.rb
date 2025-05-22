@@ -7,7 +7,17 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id]).decorate
+  rescue ActiveRecord::RecordNotFound => e
+    respond_to do |format|
+      format.html do
+        redirect_to users_path, notice: "User not found."
+      end
+      format.json do
+        render json: { error: "User not found", message: e.message }, status: :not_found
+      end
+    end
   end
+
 
   def edit 
     @user = User.find(params[:id])
@@ -32,7 +42,6 @@ class UsersController < ApplicationController
         format.html { redirect_to users_url, notice: "User updated successfully." }
         format.json { render :show, status: :ok, location: @user }
       else
-     
         @user.errors.add(:first_name, response[:errors][:first_name]) if response[:errors][:first_name]
         @user.errors.add(:last_name, response[:errors][:last_name]) if response[:errors][:last_name]
         @user.errors.add(:email, response[:errors][:email]) if response[:errors][:email]

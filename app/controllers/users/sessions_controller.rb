@@ -13,7 +13,7 @@ class Users::SessionsController < Devise::SessionsController
           'email' => resource.email
         }
     )
-  end
+    end
   end
 
   def destroy
@@ -33,6 +33,6 @@ class Users::SessionsController < Devise::SessionsController
   private
 
   def send_weekly_digest
-    WeeklyDigestJob.perform_later(current_user.id) if current_user
+    WeeklyDigestJob.perform_async(current_user.id) if current_user
   end
 end

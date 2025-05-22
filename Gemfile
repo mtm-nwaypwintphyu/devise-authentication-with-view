@@ -35,14 +35,13 @@ gem 'google-apis-calendar_v3'
 gem 'prawn'
 
 # excel generator
-gem 'axlsx_rails'
+gem 'caxlsx_rails'
 
 # background jobs
 
 gem 'sidekiq'
 
 gem 'redis'
-
 
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
@@ -94,8 +93,31 @@ group :development, :test do
 
   # mail preview
   gem 'letter_opener'
-
+  
   gem 'faker'
+
+  gem 'shoulda-matchers'
+  
+  # for debugging #  MRI (Matz's Ruby Interpreter) – the standard Ruby interpreter.
+  gem 'byebug'
+
+  # rspec integration for rails
+  gem 'rspec-rails', '~> 6.1'
+
+  # to create test data factories
+  gem 'factory_bot_rails'
+
+  # it / feature testing (interact with app)
+  gem 'capybara'
+
+  # clean database state between tests
+  gem 'database_cleaner'
+
+  # for task coverage
+  gem 'simplecov', require: false
+
+  # for assigns keyword
+  gem 'rails-controller-testing'
 end
 
 group :development do
@@ -105,6 +127,5 @@ end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem "capybara"
   gem "selenium-webdriver"
 end

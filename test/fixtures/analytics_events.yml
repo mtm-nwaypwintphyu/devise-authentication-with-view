@@ -1,9 +1,0 @@
-one:
-  user: one
-  action: MyString
-  details: 
-
-two:
-  user: two
-  action: MyString
-  details: 

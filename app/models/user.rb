@@ -42,6 +42,6 @@ class User < ApplicationRecord
 
   # sent weekly created posts
   def send_weekly_digest
-    WeeklyDigestJob.perform_later(self.id)
+    WeeklyDigestJob.perform_async(self.id)
   end
 end

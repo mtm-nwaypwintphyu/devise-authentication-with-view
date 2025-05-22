@@ -280,7 +280,7 @@ Devise.setup do |config|
     scope: "userinfo.email,userinfo.profile,calendar",
     prompt: 'select_account',
     access_type: 'offline',
-    prompt: 'consent'
+    # prompt: 'consent'
   }
 
   # config.skip_session_storage = [:http_auth]

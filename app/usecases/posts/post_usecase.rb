@@ -5,8 +5,6 @@ module Posts
       @params = params      
       @form = Posts::PostForm.new(params)
     end
-    
-
     def create
       begin
         post_create_service = Posts::PostService.new(@form.attributes)
@@ -45,7 +43,7 @@ module Posts
           return { post: @form, errors: post.errors, status: :unprocessable_entity }
         end
       rescue StandardError => e
-        return {post: post, errors: errors.message, status: :unprocessable_entity}
+        return {post: post, errors: e.message, status: :unprocessable_entity}
       end
     end
 

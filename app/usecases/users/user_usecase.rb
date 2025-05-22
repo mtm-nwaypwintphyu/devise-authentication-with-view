@@ -5,25 +5,6 @@ module Users
       @params = params      
       @form = Users::UserForm.new(params)
     end
-    
-    def create
-      begin 
-        user_create_service = Users::UserService.new(@form.attributes)
-
-        if @form.valid?
-          response = user_create_service.create
-          if response[:status] == :created
-            return {user: response[:user], status: :created}
-          end
-        else
-          @user = User.new(@form.attributes)
-          return {user: @user, errors: @form.errors, status: :unprocessable_entity}
-        end
-      rescue StandardError => errors
-        return {user: @user, errors: errors.message, status: :unprocessable_entity}
-      end
-    end
-
     def update(updated_user)
       begin
         if @form.valid?
@@ -42,7 +23,7 @@ module Users
           return {user: @form, errors: user.errors, status: :unprocessable_entity}
         end
       rescue StandardError => errors
-        return {user: user, errors: errors.message, status: :unprocessable_entity}
+        return {user: @form, errors: errors.message, status: :unprocessable_entity}
       end
     end
 
@@ -54,7 +35,7 @@ module Users
         else
           return false
         end
-      rescue StandardError => erros
+      rescue StandardError => errors
         return false
       end
     end

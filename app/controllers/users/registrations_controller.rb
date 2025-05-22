@@ -73,8 +73,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def create
     super do |resource|
-      GenerateExcelReportJob.perform_later(resource.id)
-      WelcomeEmailJob.perform_later(resource.id)
+      GenerateExcelReportJob.perform_async(resource.id)
+      WelcomeEmailJob.perform_async(resource.id)
       AnalyticsEventCreateJob.perform_async(
         resource.id,
         "user register",

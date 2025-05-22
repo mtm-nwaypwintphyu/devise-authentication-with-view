@@ -1,5 +1,5 @@
-class WelcomeEmailJob < ApplicationJob
- queue_as :default
+class WelcomeEmailJob 
+ include Sidekiq::Worker
 
   def perform(user_id)
       user = User.find(user_id)

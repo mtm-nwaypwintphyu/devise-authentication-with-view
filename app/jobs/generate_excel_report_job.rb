@@ -1,7 +1,7 @@
 require 'axlsx'
 
-class GenerateExcelReportJob < ApplicationJob
-  queue_as :default
+class GenerateExcelReportJob 
+  include Sidekiq::Worker
 
   def perform(user_id)
     user = User.find(user_id)
