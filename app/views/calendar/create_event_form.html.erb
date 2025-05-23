@@ -14,7 +14,7 @@
     <%= link_to "Back to Calendar", calendar_index_path, class: "btn btn-sm btn-success" %>
   </div>
   <div class="col-7 m-auto bg-light rounded py-3 px-5">
-    <%= form_for @event, url: create_event_calendar_index_path, html: { method: :post } do |f| %>
+    <%= form_with scope: :event, url: create_event_calendar_index_path, method: :post, local: true do |f| %>
       <div class="form-group my-4">
         <%= f.label :name, "Event Name" %>
         <%= f.text_field :name, class: "form-control" %>

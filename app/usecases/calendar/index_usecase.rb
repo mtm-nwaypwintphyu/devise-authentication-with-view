@@ -1,4 +1,3 @@
-# app/usecases/calendar/index_usecase.rb
 module Calendar
   class IndexUsecase
     def initialize(params)

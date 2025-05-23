@@ -1,3 +1,4 @@
+require "ostruct"
 class CalendarController < ApplicationController
   before_action :authenticate_user!
   before_action :set_calendar_range
@@ -31,7 +32,7 @@ class CalendarController < ApplicationController
 
   # get to form
   def create_event_form
-    @event = Event.new
+    @event = OpenStruct.new(name: '', description: '', start_time: nil, end_time: nil)
   end
 
   # get to edit form
@@ -49,7 +50,7 @@ class CalendarController < ApplicationController
       redirect_to all_events_path
     else
      flash[:errors] = usecase.errors
-    redirect_to create_event_form_calendar_index_path
+     redirect_to edit_event_form_calendar_index_path
     end
   end
   

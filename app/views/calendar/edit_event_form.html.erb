@@ -1,6 +1,5 @@
-
 <%= render 'layouts/navbar' %>
-<div class="container-fluid  p-5 rounded" style="height:700px; background-color: rgba(255, 255, 0, 0.292);">
+<div class="container-fluid p-5 rounded" style="height:700px; background-color: rgba(255, 255, 0, 0.292);">
   <h2 class="mb-4 text-success text-center">Editing Event</h2>
   <div class="d-flex col-6 my-2 m-auto">
     <%= link_to "Back to All Events", all_events_path, class: "btn btn-sm btn-success" %>
@@ -12,7 +11,7 @@
       <div class="my-4 form-group">
         <%= label_tag "event[name]", "Event Name" %>
         <%= text_field_tag "event[name]", @event.summary, class: "form-control" %>
-         <% if flash[:errors] && flash[:errors]["name"] %>
+        <% if flash[:errors] && flash[:errors]["name"] %>
           <div class="text-danger">
             <%= flash[:errors]["name"] %>
           </div>
@@ -31,7 +30,9 @@
 
       <div class="my-4 form-group">
         <%= label_tag "event[start_time]", "Start Time" %>
-        <%= datetime_local_field_tag "event[start_time]", @event.start.date_time.to_datetime.strftime("%Y-%m-%dT%H:%M"), class: "form-control" %>
+        <%= datetime_local_field_tag "event[start_time]",
+              (@event.start&.date_time&.to_datetime&.strftime("%Y-%m-%dT%H:%M") rescue nil),
+              class: "form-control" %>
         <% if flash[:errors] && flash[:errors]["start_time"] %>
           <div class="text-danger">
             <%= flash[:errors]["start_time"] %>
@@ -41,8 +42,10 @@
 
       <div class="my-4 form-group">
         <%= label_tag "event[end_time]", "End Time" %>
-        <%= datetime_local_field_tag "event[end_time]", @event.end.date_time.to_datetime.strftime("%Y-%m-%dT%H:%M"), class: "form-control" %>
-         <% if flash[:errors] && flash[:errors]["end_time"] %>
+        <%= datetime_local_field_tag "event[end_time]",
+              (@event.end&.date_time&.to_datetime&.strftime("%Y-%m-%dT%H:%M") rescue nil),
+              class: "form-control" %>
+        <% if flash[:errors] && flash[:errors]["end_time"] %>
           <div class="text-danger">
             <%= flash[:errors]["end_time"] %>
           </div>
@@ -54,5 +57,4 @@
       </div>
     <% end %>
   </div>
-  
 </div>
