@@ -1,5 +1,6 @@
 # get user count
 # frozen_string_literal: true
+
 namespace :user do
   desc "Print total number of users"
   task count: :environment do
@@ -20,13 +21,13 @@ end
 namespace :user do
   desc "Export users to CSV"
   task export_csv: :environment do
-    require 'csv'
-    
+    require "csv"
+
     file_path = "tmp/users_#{Time.now.strftime('%Y%m%d%H%M%S')}.csv"
     CSV.open(file_path, "wb") do |csv|
-      csv << ["ID", "Name", "Email", "Created At"]
+      csv << [ "ID", "Name", "Email", "Created At" ]
       User.find_each do |user|
-        csv << [user.id, user.first_name,user.last_name, user.email, user.created_at]
+        csv << [ user.id, user.first_name, user.last_name, user.email, user.created_at ]
       end
     end
     puts "Users exported to #{file_path}"
@@ -37,13 +38,13 @@ end
 namespace :post do
   desc "Export posts to CSV"
   task export_csv: :environment do
-    require 'csv'
+    require "csv"
     file_path = "tmp/posts.csv"
-    CSV.open(file_path,"wb")do |csv|
-      csv << ["ID", "Title", "Content", "User ID", "Created At"]
+    CSV.open(file_path, "wb") do |csv|
+      csv << [ "ID", "Title", "Content", "User ID", "Created At" ]
       Post.find_each do |post|
-        csv << [post.id, post.title, post.content, post.user_id, post.created_at]
-      end 
+        csv << [ post.id, post.title, post.content, post.user_id, post.created_at ]
+      end
     end
     puts "Posts exported to #{file_path}"
   end
@@ -58,24 +59,24 @@ namespace :user do
       UserMailer.welcome_email(user).deliver_now
       puts "Welcome email sent to #{user.email}"
     end
-  end  
+  end
 end
 
 # seeder tasks
 namespace :db do
   desc "Seed the database with sample data"
   task seed_users: :environment do
-    require 'faker'
-    
+    require "faker"
+
     10.times do
       User.create(
         first_name: Faker::Name.first_name,
         last_name: Faker::Name.last_name,
         email: Faker::Internet.email,
-        password: 'password'
+        password: "password"
       )
     end
-    
+
     puts "10 sample users created."
   end
 end
@@ -84,13 +85,13 @@ end
 namespace :db do
   desc "Seed the database with sample posts"
   task seed_posts: :environment do
-    require 'faker'
+    require "faker"
 
     10.times do
       Post.create(
         title: Faker::Lorem.sentence(word_count: 3),
         content: Faker::Lorem.paragraphs(number: 2).join("\n"),
-        user: User.order("RAND()").first  
+        user: User.order("RAND()").first
       )
     end
     puts "10 sample posts created."
@@ -120,7 +121,7 @@ end
 # create user
 namespace :user do
   desc "Create a new user"
-  task :create, [:first_name, :last_name, :email, :password] => :environment do |t, args|
+  task :create, [ :first_name, :last_name, :email, :password ] => :environment do |t, args|
     user = User.create(
       first_name: args[:first_name],
       last_name:  args[:last_name],
@@ -133,7 +134,7 @@ end
 
 namespace :post do
   desc "Create a new post"
-  task :create, [:title, :content, :user_id] => :environment do |t, args|
+  task :create, [ :title, :content, :user_id ] => :environment do |t, args|
     post = Post.create(
       title:   args[:title],
       content: args[:content],
@@ -158,4 +159,3 @@ namespace :stats do
     end
   end
 end
-

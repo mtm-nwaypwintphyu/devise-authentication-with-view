@@ -1,8 +1,8 @@
 module Posts
   class PostForm
-    include ActiveModel::Model  
+    include ActiveModel::Model
 
-    attr_accessor :title, :content, :user_id  
+    attr_accessor :title, :content, :user_id
 
     validates :title, presence: { message: "Title cannot be empty." }
     validates :content, presence: { message: "Content cannot be empty." }

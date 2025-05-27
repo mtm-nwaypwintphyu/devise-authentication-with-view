@@ -2,7 +2,6 @@ require 'rails_helper'
 require 'googleauth'
 
 RSpec.describe User, type: :model do
-
   # test factory
   it "has a valid factory" do
     expect(build(:user)).to be_valid
@@ -73,5 +72,4 @@ RSpec.describe User, type: :model do
     }.to change { WeeklyDigestJob.jobs.size }.by(1)
     end
   end
-
 end

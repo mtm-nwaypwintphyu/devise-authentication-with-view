@@ -15,20 +15,20 @@ class Calendar::UpdateEventUsecase
     service.authorization = @user.google_oauth2_token
 
     begin
-      event = service.get_event('primary', @event_params[:id])
+      event = service.get_event("primary", @event_params[:id])
       event.summary = @event_params[:name]
       event.description = @event_params[:description]
 
       event.start = Google::Apis::CalendarV3::EventDateTime.new(
         date_time: @event_params[:start_time].to_datetime.rfc3339,
-        time_zone: 'Asia/Yangon'
+        time_zone: "Asia/Yangon"
       )
       event.end = Google::Apis::CalendarV3::EventDateTime.new(
         date_time: @event_params[:end_time].to_datetime.rfc3339,
-        time_zone: 'Asia/Yangon'
+        time_zone: "Asia/Yangon"
       )
 
-      service.update_event('primary', @event_params[:id], event)
+      service.update_event("primary", @event_params[:id], event)
 
       { success: true }
     rescue Google::Apis::Error => e

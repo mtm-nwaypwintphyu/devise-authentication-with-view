@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe "Registration", type: :request do
-
   describe "POST /users" do
     context "when user param is valid" do
       before do
@@ -21,10 +20,10 @@ RSpec.describe "Registration", type: :request do
         it "return success" do
           post users_path, params: valid_params
           expect(response).to have_http_status(:see_other)
-          follow_redirect! 
+          follow_redirect!
           expect(response).to have_http_status(:ok)
         end
-        
+
         it "enqueues analytics jobs" do
           expect {
             post users_path, params: valid_params
@@ -50,6 +49,5 @@ RSpec.describe "Registration", type: :request do
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
-
   end
 end

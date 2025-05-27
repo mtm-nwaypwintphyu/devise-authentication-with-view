@@ -13,15 +13,15 @@ class ReportsController < ApplicationController
     if result[:success]
       AnalyticsEventCreateJob.perform_async(
         current_user.id,
-        'download pdf file',
+        "download pdf file",
         {
-          'download user' => current_user.first_name + " "+ current_user.last_name,
-          'pdf title' => "Post information pdf"
+          "download user" => current_user.first_name + " "+ current_user.last_name,
+          "pdf title" => "Post information pdf"
         }
       )
       send_file result[:file_path],
-                type: 'application/pdf',
-                disposition: 'attachment',
+                type: "application/pdf",
+                disposition: "attachment",
                 filename: result[:filename]
     else
       redirect_to posts_path, alert: result[:message]
@@ -33,18 +33,17 @@ class ReportsController < ApplicationController
     if result[:success]
        AnalyticsEventCreateJob.perform_async(
         current_user.id,
-        'download excel file',
+        "download excel file",
         {
-          'download user' => current_user.first_name + " "+ current_user.last_name,
-          'excle file title' => "User information excle file"
+          "download user" => current_user.first_name + " "+ current_user.last_name,
+          "excle file title" => "User information excle file"
         }
       )
       send_file result[:file_path],
-                      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                       filename: result[:file_name]
     else
       redirect_to users_path, notice: result[:message]
     end
   end
-
 end

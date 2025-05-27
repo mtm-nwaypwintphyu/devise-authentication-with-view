@@ -12,5 +12,4 @@ class PostDecorator < Draper::Decorator
   def formatted_title
     object.title.titleize
   end
-
 end

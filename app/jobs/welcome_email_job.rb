@@ -1,4 +1,4 @@
-class WelcomeEmailJob 
+class WelcomeEmailJob
  include Sidekiq::Worker
 
   def perform(user_id)

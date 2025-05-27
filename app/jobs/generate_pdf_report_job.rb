@@ -1,5 +1,5 @@
 # create pdf documents
-require 'prawn'
+require "prawn"
 
 class GeneratePdfReportJob < ApplicationJob
   queue_as :default

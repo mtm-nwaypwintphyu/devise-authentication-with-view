@@ -1,5 +1,5 @@
 class DigestMailer < ApplicationMailer
-  default from: 'crud.npp@mail.com'
+  default from: "crud.npp@mail.com"
 
    def weekly_digest(posts, user)
     @posts = posts

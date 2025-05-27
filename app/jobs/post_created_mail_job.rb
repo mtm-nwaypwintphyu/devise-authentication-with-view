@@ -4,6 +4,6 @@ class PostCreatedMailJob < ApplicationJob
   def perform(params)
     user = params[:user]
     title = params[:title]
-    PostMailer.create_email(user,title).deliver_later
+    PostMailer.create_email(user, title).deliver_later
   end
 end

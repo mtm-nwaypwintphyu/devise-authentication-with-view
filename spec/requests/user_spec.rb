@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Users", type: :request do
-  let(:user) { FactoryBot.create(:user)}
+  let(:user) { FactoryBot.create(:user) }
 
   # index
   describe "GET /users" do
@@ -21,7 +21,6 @@ RSpec.describe "Users", type: :request do
         assigns(:users).each do |decorated_user|
           expect(decorated_user).to be_a(UserDecorator)
         end
-
       end
     end
 
@@ -35,9 +34,7 @@ RSpec.describe "Users", type: :request do
 
   # show
   describe "GET /users/:id" do
-    
     context "when user is signed in" do
-
       before do
         sign_in user
         get "/users/#{user.id}"
@@ -75,13 +72,12 @@ RSpec.describe "Users", type: :request do
 
   # edit
   describe "GET /edit" do
-
     context "when user is signed in" do
-      before do 
+      before do
         sign_in user
         get "/users/#{user.id}/edit"
       end
-      
+
       it "render the edit page successfully" do
         expect(response).to have_http_status(:success)
       end
@@ -97,16 +93,15 @@ RSpec.describe "Users", type: :request do
 
   # update
   describe "PUT /update" do
-    let(:valid_params) { { user: {first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.unique.email} } }
-    let(:invalid_params) { { user: {first_name: "", last_name: "", email: Faker::Internet.unique.email} } }
+    let(:valid_params) { { user: { first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.unique.email } } }
+    let(:invalid_params) { { user: { first_name: "", last_name: "", email: Faker::Internet.unique.email } } }
 
     context "when user is signed in" do
       context "with valid params" do
         before do
-          sign_in user  
-          Sidekiq::Worker.clear_all 
+          sign_in user
+          Sidekiq::Worker.clear_all
           put user_path(user), params: valid_params
-          
         end
 
         it "updates the user successfully" do
@@ -118,7 +113,7 @@ RSpec.describe "Users", type: :request do
         end
 
         it "enqueues the analytics jobs" do
-          expect{put user_path(user), params: valid_params}.to change(AnalyticsEventCreateJob.jobs, :size).by(1)
+          expect { put user_path(user), params: valid_params }.to change(AnalyticsEventCreateJob.jobs, :size).by(1)
         end
       end
 
@@ -155,17 +150,17 @@ RSpec.describe "Users", type: :request do
     context "when user is signed in" do
       before do
         sign_in user
-        Sidekiq::Worker.clear_all 
+        Sidekiq::Worker.clear_all
       end
       it "redirect to users list" do
         delete user_path(user)
         expect(response).to redirect_to(users_path)
       end
       it "enqueue the analytics jobs" do
-        expect{delete user_path(user)}.to change(AnalyticsEventCreateJob.jobs, :size).by(1)
+        expect { delete user_path(user) }.to change(AnalyticsEventCreateJob.jobs, :size).by(1)
       end
     end
-    
+
     context "when user is not signed in" do
       it "redirect to user session path" do
         delete user_path(user)

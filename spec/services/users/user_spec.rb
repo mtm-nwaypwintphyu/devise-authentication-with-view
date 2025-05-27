@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Users::UserService, type: :service do
   describe "#update" do
-   let(:valid_params) { {first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.unique.email} } 
+   let(:valid_params) { { first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, email: Faker::Internet.unique.email } }
    let(:user) { create(:user) }
 
     context "when user update successfully" do
@@ -27,7 +27,6 @@ RSpec.describe Users::UserService, type: :service do
         expect(response[:user]).to eq(user)
       end
     end
-
   end
 
   describe "#destroy" do
@@ -58,6 +57,5 @@ RSpec.describe Users::UserService, type: :service do
         expect(response).to eq(false)
       end
    end
-
   end
 end

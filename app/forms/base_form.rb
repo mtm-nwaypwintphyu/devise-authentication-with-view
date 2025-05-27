@@ -1,5 +1,5 @@
 class BaseForm
-  VirtusMixin = Virtus.model 
+  VirtusMixin = Virtus.model
   include VirtusMixin
   include ActiveModel::Model
   include ActiveModel::Validations

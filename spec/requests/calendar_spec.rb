@@ -1,19 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe "Calendar", type: :request do
-
   let!(:user) { create(:user) }
-  
+
   let(:mock_event1) do
     double("Event",
-      start: double("Start", date_time: DateTime.new(2025,5,22,9,0,0)),
+      start: double("Start", date_time: DateTime.new(2025, 5, 22, 9, 0, 0)),
       summary: "Meeting with team"
     )
   end
 
   let(:mock_event2) do
     double("Event",
-      start: double("Start", date_time: DateTime.new(2025,5,22,13,30,0)),
+      start: double("Start", date_time: DateTime.new(2025, 5, 22, 13, 30, 0)),
       summary: "Lunch with client"
     )
   end
@@ -31,7 +30,7 @@ RSpec.describe "Calendar", type: :request do
 
     allow_any_instance_of(CalendarController).to receive(:load_google_calendar) do |controller|
       controller.instance_variable_set(:@events_by_day, {
-        Date.today => [mock_event1, mock_event2]
+        Date.today => [ mock_event1, mock_event2 ]
       })
     end
 
@@ -42,7 +41,7 @@ RSpec.describe "Calendar", type: :request do
   describe "GET /calendar_index_path" do
     it "renders all events in the response body" do
       get calendar_index_path
-      
+
       expect(response.body).to include("Meeting with team")
       expect(response.body).to include("Lunch with client")
     end
@@ -54,15 +53,15 @@ RSpec.describe "Calendar", type: :request do
       controller_instance = CalendarController.new
 
       controller_instance.instance_variable_set(:@events_by_day, {
-        Date.today => [mock_event1],
-        Date.tomorrow => [mock_event2]
+        Date.today => [ mock_event1 ],
+        Date.tomorrow => [ mock_event2 ]
       })
 
       controller_instance.send(:all_events)
 
       events = controller_instance.instance_variable_get(:@events)
 
-      expect(events).to eq([mock_event1, mock_event2])
+      expect(events).to eq([ mock_event1, mock_event2 ])
     end
   end
 
@@ -71,9 +70,9 @@ RSpec.describe "Calendar", type: :request do
     before do
       allow(Calendar::AllHolidaysUsecase).to receive(:new).and_return(
         double(call: {
-          today: Date.new(2025,5,1),
-          first_day: Date.new(2025,5,1).beginning_of_month,
-          last_day: Date.new(2025,5,1).end_of_month
+          today: Date.new(2025, 5, 1),
+          first_day: Date.new(2025, 5, 1).beginning_of_month,
+          last_day: Date.new(2025, 5, 1).end_of_month
         })
       )
 
@@ -81,11 +80,11 @@ RSpec.describe "Calendar", type: :request do
       allow_any_instance_of(CalendarController).to receive(:set_calendar_range).and_return(true)
 
       mock_google_service = double("Google::Apis::CalendarV3::CalendarService")
-      
+
       allow(mock_google_service).to receive(:authorization=).with(anything)
-      
+
       allow(mock_google_service).to receive(:list_calendar_lists).and_return(double(items: []))
-      
+
       allow(mock_google_service).to receive(:fetch_holidays).and_return([])
 
       allow(Google::Apis::CalendarV3::CalendarService).to receive(:new).and_return(mock_google_service)
@@ -96,9 +95,9 @@ RSpec.describe "Calendar", type: :request do
 
       expect(response).to have_http_status(:success)
 
-      expect(assigns(:today)).to eq(Date.new(2025,5,1))
-      expect(assigns(:first_day)).to eq(Date.new(2025,5,1).beginning_of_month)
-      expect(assigns(:last_day)).to eq(Date.new(2025,5,1).end_of_month)
+      expect(assigns(:today)).to eq(Date.new(2025, 5, 1))
+      expect(assigns(:first_day)).to eq(Date.new(2025, 5, 1).beginning_of_month)
+      expect(assigns(:last_day)).to eq(Date.new(2025, 5, 1).end_of_month)
     end
   end
 
@@ -118,8 +117,8 @@ RSpec.describe "Calendar", type: :request do
         id: "12345",
         summary: "Title",
         description: "Something",
-        start: OpenStruct.new(date_time: DateTime.new(2025,5,1,9,0,0)),
-        end: OpenStruct.new(date_time: DateTime.new(2025,5,2,17,0,0))
+        start: OpenStruct.new(date_time: DateTime.new(2025, 5, 1, 9, 0, 0)),
+        end: OpenStruct.new(date_time: DateTime.new(2025, 5, 2, 17, 0, 0))
       )
 
       allow(Calendar::EditEventFormUsecase).to receive(:new).and_return(
@@ -172,7 +171,7 @@ RSpec.describe "Calendar", type: :request do
         usecase_double = double("Calendar::CreateEventUsecase")
         allow(Calendar::CreateEventUsecase).to receive(:new).and_return(usecase_double)
         allow(usecase_double).to receive(:call).and_return({ success: true })
-        
+
         post create_event_calendar_index_path, params: valid_params
         expect(response).to redirect_to(all_events_path)
         expect(flash[:notice]).to eq("Event created successfully!")
@@ -190,7 +189,7 @@ RSpec.describe "Calendar", type: :request do
         }
         allow(Calendar::CreateEventUsecase).to receive(:new).and_return(usecase_double)
         allow(usecase_double).to receive(:call).and_return({ success: false, errors: error_messages })
-        
+
         post create_event_calendar_index_path, params: invalid_params
         expect(response).to redirect_to(create_event_form_calendar_index_path)
         expect(flash[:errors]).to eq(error_messages)
@@ -232,7 +231,7 @@ RSpec.describe "Calendar", type: :request do
         usecase_double = double("Calendar::UpdateEventUsecase")
         allow(Calendar::UpdateEventUsecase).to receive(:new).and_return(usecase_double)
         allow(usecase_double).to receive(:call).and_return({ success: true })
-        
+
         post update_event_calendar_index_path, params: valid_params
         expect(response).to redirect_to(all_events_path)
         expect(flash[:notice]).to eq("Event updated successfully!")
@@ -251,7 +250,7 @@ RSpec.describe "Calendar", type: :request do
         allow(Calendar::UpdateEventUsecase).to receive(:new).and_return(usecase_double)
         allow(usecase_double).to receive(:call).and_return({ success: false, errors: error_messages })
         allow(usecase_double).to receive(:errors).and_return(error_messages)
-        
+
         post update_event_calendar_index_path, params: invalid_params
         expect(response).to redirect_to(edit_event_form_calendar_index_path)
         expect(flash[:errors]).to eq(error_messages)
@@ -265,8 +264,8 @@ RSpec.describe "Calendar", type: :request do
       id: "12345",
       summary: "Title",
       description: "Something",
-      start: OpenStruct.new(date_time: DateTime.new(2025,5,1,9,0,0)),
-      end: OpenStruct.new(date_time: DateTime.new(2025,5,2,17,0,0))
+      start: OpenStruct.new(date_time: DateTime.new(2025, 5, 1, 9, 0, 0)),
+      end: OpenStruct.new(date_time: DateTime.new(2025, 5, 2, 17, 0, 0))
     )
 
     before do
@@ -280,7 +279,7 @@ RSpec.describe "Calendar", type: :request do
         usecase_double = double("Calendar::DeleteEventUsecase")
         allow(Calendar::DeleteEventUsecase).to receive(:new).and_return(usecase_double)
         allow(usecase_double).to receive(:call).and_return({ success: true })
-        
+
         post delete_event_calendar_index_path, params: mock_event.id
         expect(response).to redirect_to(all_events_path)
         expect(flash[:notice]).to eq("Event deleted successfully!")

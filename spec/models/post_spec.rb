@@ -13,18 +13,18 @@ RSpec.describe Post, type: :model do
 
   # test validation
   describe 'validation' do
-    it { should validate_presence_of(:title)}
-    it { should validate_presence_of(:content)}
+    it { should validate_presence_of(:title) }
+    it { should validate_presence_of(:content) }
   end
 
   # test background jobs
   describe 'callbacks' do
-    let(:user) { create(:user)}
+    let(:user) { create(:user) }
     it 'enqueues generate report pdf job after create' do
       ActiveJob::Base.queue_adapter = :test # makes possible test to detect background jobs
-      expect{
-        create(:post,user: user)
+      expect {
+        create(:post, user: user)
     }.to have_enqueued_job(GeneratePdfReportJob)
     end
   end
-end 
+end

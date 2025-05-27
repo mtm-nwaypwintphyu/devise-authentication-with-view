@@ -1,5 +1,5 @@
-require 'google/apis/calendar_v3'
-require 'googleauth'
+require "google/apis/calendar_v3"
+require "googleauth"
 
 class User < ApplicationRecord
   include Devise::JWT::RevocationStrategies::JTIMatcher
@@ -9,7 +9,7 @@ class User < ApplicationRecord
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
-         :omniauthable, omniauth_providers: [:google_oauth2]
+         :omniauthable, omniauth_providers: [ :google_oauth2 ]
 
   validates :first_name, presence: { message: "First name cannot be blank" }
   validates :last_name, presence: { message: "Last name cannot be blank" }
@@ -31,14 +31,14 @@ class User < ApplicationRecord
 
   def google_oauth_credentials
     Google::Auth::UserRefreshCredentials.new(
-      client_id: ENV['GOOGLE_CLIENT_ID'],
-      client_secret: ENV['GOOGLE_CLIENT_SECRET'],
-      scope: 'https://www.googleapis.com/auth/calendar.readonly',
+      client_id: ENV["GOOGLE_CLIENT_ID"],
+      client_secret: ENV["GOOGLE_CLIENT_SECRET"],
+      scope: "https://www.googleapis.com/auth/calendar.readonly",
       access_token: google_oauth2_token,
       refresh_token: google_oauth2_refresh_token,
       expires_at: token_expires_at.to_i
     )
-  end  
+  end
 
   # sent weekly created posts
   def send_weekly_digest

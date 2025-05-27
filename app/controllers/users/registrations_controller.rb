@@ -79,13 +79,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
         resource.id,
         "user register",
         {
-          'user_id' => resource.id,
-          'first_name' => resource.first_name,
-          'last_name' => resource.last_name,
-          'email' => resource.email
+          "user_id" => resource.id,
+          "first_name" => resource.first_name,
+          "last_name" => resource.last_name,
+          "email" => resource.email
         }
       )
     end
   end
-
 end

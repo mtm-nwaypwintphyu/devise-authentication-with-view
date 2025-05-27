@@ -35,9 +35,9 @@ RSpec.describe "Posts", type: :request do
     let(:user) { FactoryBot.create(:user) }
 
     context "when user is signed in" do
-      before { 
+      before {
         sign_in user
-        Sidekiq::Worker.clear_all 
+        Sidekiq::Worker.clear_all
       }
 
       context "with valid parameters" do
@@ -61,11 +61,10 @@ RSpec.describe "Posts", type: :request do
         end
 
         it "enqueues the analytic job" do
-          expect{
-            post posts_path, params:valid_params
+          expect {
+            post posts_path, params: valid_params
         }.to change(AnalyticsEventCreateJob.jobs, :size).by(1)
         end
-
       end
     end
 
@@ -88,7 +87,6 @@ RSpec.describe "Posts", type: :request do
 
   describe "GET /posts.new" do
     context "when user is signed in" do
-
       before do
         sign_in user
         get new_post_path
@@ -101,7 +99,6 @@ RSpec.describe "Posts", type: :request do
       it "renders the new post form" do
         expect(response.body).to include("Post Creation")
       end
-
     end
 
     context "when user is not signed in" do
@@ -110,7 +107,6 @@ RSpec.describe "Posts", type: :request do
       it "redirect to sign in page" do
         expect(response).to redirect_to(new_user_session_path)
       end
-
     end
   end
 
@@ -165,14 +161,14 @@ RSpec.describe "Posts", type: :request do
   describe 'PATCH /posts/:id' do
     let(:user) { create(:user) }
     let!(:post) { create(:post, user: user) }
-    let(:valid_params) { { post: {title: 'Update Title', content: 'Update content' } } }
-    before { 
+    let(:valid_params) { { post: { title: 'Update Title', content: 'Update content' } } }
+    before {
             sign_in user
-            Sidekiq::Worker.clear_all 
+            Sidekiq::Worker.clear_all
           }
 
     it "update post and redirect " do
-      patch post_path(post),params: valid_params
+      patch post_path(post), params: valid_params
       expect(response).to redirect_to (posts_path)
       expect(flash.to_hash["notice"]).to eq('Post updated successfully.')
       expect(post.reload.title).to eq('Update Title')
@@ -187,7 +183,7 @@ RSpec.describe "Posts", type: :request do
   # destroy post spec
   describe 'DELETE /posts/:id' do
     let(:user) { FactoryBot.create(:user) }
-    let!(:post) { FactoryBot.create(:post, user: user) }  
+    let!(:post) { FactoryBot.create(:post, user: user) }
 
     context "when user is signed in" do
       before do
@@ -195,15 +191,14 @@ RSpec.describe "Posts", type: :request do
       end
 
       it "returns deleted message" do
-        delete post_path(post)  
+        delete post_path(post)
         expect(flash.to_hash["notice"]).to eq("Post deleted successfully")
-      end 
+      end
       it "enqueues the analytics job" do
-        expect{
+        expect {
           delete post_path(post.id)
       }.to change(AnalyticsEventCreateJob.jobs, :size).by(1)
       end
     end
   end
-
 end

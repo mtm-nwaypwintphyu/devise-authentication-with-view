@@ -9,8 +9,8 @@ RSpec.describe Calendar::IndexUsecase do
 
       it 'returns first_day and last_day for that date\'s month and today' do
         result = subject
-        expect(result[:first_day]).to eq(Date.new(2025,5,1))
-        expect(result[:last_day]).to eq(Date.new(2025,5,31))
+        expect(result[:first_day]).to eq(Date.new(2025, 5, 1))
+        expect(result[:last_day]).to eq(Date.new(2025, 5, 31))
         expect(result[:today]).to eq(Date.today)
       end
     end
@@ -32,8 +32,8 @@ RSpec.describe Calendar::IndexUsecase do
 
       it 'returns first_day and last_day for given month/year and today' do
         result = subject
-        expect(result[:first_day]).to eq(Date.new(2024,3,1))
-        expect(result[:last_day]).to eq(Date.new(2024,3,31))
+        expect(result[:first_day]).to eq(Date.new(2024, 3, 1))
+        expect(result[:last_day]).to eq(Date.new(2024, 3, 31))
         expect(result[:today]).to eq(Date.today)
       end
     end

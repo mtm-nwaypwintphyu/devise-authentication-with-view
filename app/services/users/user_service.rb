@@ -7,9 +7,9 @@ module Users
     def update(updated_user)
       user = User.new(@params)
       if updated_user.update(@params)
-        return {user: updated_user, status: :updated}
+        { user: updated_user, status: :updated }
       else
-        return {user: updated_user,status: :unprocessable_entity}
+        { user: updated_user, status: :unprocessable_entity }
       end
     end
 
@@ -23,6 +23,5 @@ module Users
       Rails.logger.error "Failed to delete user: #{e.message}"
       false
     end
-    
   end
 end

@@ -6,9 +6,8 @@ RSpec.describe Posts::PostUsecase do
     let(:valid_params) { { title: 'Valid Title', content: 'Valid content' } }
     let(:invalid_params) { { title: '', content: '' } }
 
-    context 'when the form is valid' do   
-      it 'calls the post service create method and returns the response' do   
-
+    context 'when the form is valid' do
+      it 'calls the post service create method and returns the response' do
         form = instance_double('Posts::PostForm', valid?: true, attributes: valid_params)
         service = instance_double('Posts::PostService', create: { post: 'created_post', status: :created })
 
@@ -91,7 +90,6 @@ RSpec.describe Posts::PostUsecase do
 
         expect(result[:errors][:title].flatten).to include("Title cannot be empty.")
         expect(result[:errors][:content].flatten).to include("Content cannot be empty.")
-
       end
     end
     context 'when an exception is raised' do

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Oauth",type: :request do
-
+RSpec.describe "Oauth", type: :request do
   before do
     OmniAuth.config.test_mode = true
     OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new(
@@ -38,7 +37,7 @@ RSpec.describe "Oauth",type: :request do
     end
 
     context 'when user is not persisted' do
-      let(:user) {instance_double(User, persisted?: false)}
+      let(:user) { instance_double(User, persisted?: false) }
 
       before do
         allow(User).to receive(:from_omniauth).and_return(user)

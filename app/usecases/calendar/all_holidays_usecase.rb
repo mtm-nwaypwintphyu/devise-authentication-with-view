@@ -9,14 +9,14 @@ module Calendar
       today = parse_date(@params)
 
       first_day, last_day =
-        if ["all_holidays", "all_events"].include?(@action_name)
+        if [ "all_holidays", "all_events" ].include?(@action_name)
           if @params[:month_only] == "true"
-            [today.beginning_of_month, today.end_of_month]
+            [ today.beginning_of_month, today.end_of_month ]
           else
-            [today.beginning_of_year, today.end_of_year]
+            [ today.beginning_of_year, today.end_of_year ]
           end
         else
-          [today.beginning_of_month, today.end_of_month]
+          [ today.beginning_of_month, today.end_of_month ]
         end
 
       {

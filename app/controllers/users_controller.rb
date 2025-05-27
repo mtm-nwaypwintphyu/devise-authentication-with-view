@@ -19,10 +19,10 @@ class UsersController < ApplicationController
   end
 
 
-  def edit 
+  def edit
     @user = User.find(params[:id])
   end
-  
+
   def update
     @user = User.find(params[:id])
     @user_usecase = Users::UserUsecase.new(user_params)
@@ -31,12 +31,12 @@ class UsersController < ApplicationController
       if response[:status] == :updated
        AnalyticsEventCreateJob.perform_async(
           current_user.id,
-          'user update',
+          "user update",
           {
-            'user_id' => @user.id,
-            'first_name' => @user.first_name,
-            'last_name' => @user.last_name,
-            'email' => @user.email
+            "user_id" => @user.id,
+            "first_name" => @user.first_name,
+            "last_name" => @user.last_name,
+            "email" => @user.email
           }
         )
         format.html { redirect_to users_url, notice: "User updated successfully." }
@@ -58,15 +58,15 @@ class UsersController < ApplicationController
       if @usecase.destroy(params[:id])
         AnalyticsEventCreateJob.perform_async(
           current_user.id,
-          'user delete',
+          "user delete",
           {
-            'user_id' => @user.id,
-            'first_name' => @user.first_name,
-            'last_name' => @user.last_name,
-            'email' => @user.email
+            "user_id" => @user.id,
+            "first_name" => @user.first_name,
+            "last_name" => @user.last_name,
+            "email" => @user.email
           }
         )
-        format.html { redirect_to users_url, notice: "User deleted successfully." } 
+        format.html { redirect_to users_url, notice: "User deleted successfully." }
         format.json { render :show, status: :ok, location: @user }
       end
     end
@@ -81,5 +81,4 @@ class UsersController < ApplicationController
   def user_params
     params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation)
   end
-
 end

@@ -27,7 +27,7 @@ module DataxSample
     config.file_watcher = ActiveSupport::FileUpdateChecker
 
     config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Session::CookieStore, key: '_my_session'
+    config.middleware.use ActionDispatch::Session::CookieStore, key: "_my_session"
 
     # for active jobs'
     # config.active_job.queue_adapter = :async

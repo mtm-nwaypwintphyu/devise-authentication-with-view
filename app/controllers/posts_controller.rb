@@ -8,7 +8,7 @@ class PostsController < ApplicationController
   def new
     @post = Posts::PostForm.new
   end
-  
+
   def create
     respond_to do |format|
       @post = Posts:: PostUsecase.new(post_params.merge(user_id: current_user.id))
@@ -16,15 +16,15 @@ class PostsController < ApplicationController
       if response[:status] == :created
         AnalyticsEventCreateJob.perform_async(
           current_user.id,
-          'post create',
+          "post create",
           {
-            'create_user' => current_user.first_name + " "+ current_user.last_name,
-            'post_title' => post_params[:title],
-            'post_content' => post_params[:content]
+            "create_user" => current_user.first_name + " "+ current_user.last_name,
+            "post_title" => post_params[:title],
+            "post_content" => post_params[:content]
           }
         )
         PostCreatedMailJob.perform_later(post_params.merge(user: current_user))
-        format.html {redirect_to posts_path, notice: "Post created successfully."}
+        format.html { redirect_to posts_path, notice: "Post created successfully." }
       else
         @post = Posts::PostForm.new(post_params.merge(user_id: current_user.id))
         @post.errors.add(:title, response[:errors][:title]) if response[:errors][:title]
@@ -53,14 +53,14 @@ class PostsController < ApplicationController
       if response[:status] == :updated
          AnalyticsEventCreateJob.perform_async(
           current_user.id,
-          'post update',
+          "post update",
           {
-            'update_user' => current_user.first_name + " "+ current_user.last_name,
-            'post_title' => post_params[:title],
-            'post_content' => post_params[:content]
+            "update_user" => current_user.first_name + " "+ current_user.last_name,
+            "post_title" => post_params[:title],
+            "post_content" => post_params[:content]
           }
         )
-        format.html { redirect_to posts_path, notice: 'Post updated successfully.' }
+        format.html { redirect_to posts_path, notice: "Post updated successfully." }
         format.json { render :show, status: :ok, location: @post }
       else
         @post = Posts::PostForm.new(post_params.merge(user_id: current_user.id))
@@ -81,14 +81,14 @@ class PostsController < ApplicationController
       if response
          AnalyticsEventCreateJob.perform_async(
           current_user.id,
-          'post delete',
+          "post delete",
           {
-            'delete_user' => current_user.first_name + " "+ current_user.last_name,
-            'post_title' => @post.title,
-            'post_content' => @post.content
+            "delete_user" => current_user.first_name + " "+ current_user.last_name,
+            "post_title" => @post.title,
+            "post_content" => @post.content
           }
         )
-        format.html { redirect_to posts_url, notice:"Post deleted successfully" }
+        format.html { redirect_to posts_url, notice: "Post deleted successfully" }
         format.json { head :no_content }
       end
     end
@@ -96,9 +96,8 @@ class PostsController < ApplicationController
 
 
   private
-  
+
   def post_params
     params.require(:post).permit(:title, :content)
   end
-
 end

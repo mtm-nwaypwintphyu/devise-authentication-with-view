@@ -10,7 +10,7 @@ RSpec.describe Calendar::SetCalendarRangeUsecase do
     let(:params) { { date: date_str } }
 
     context 'when action_name is all_holidays or all_events' do
-      ['all_holidays', 'all_events'].each do |action|
+      [ 'all_holidays', 'all_events' ].each do |action|
         context "and action_name is #{action}" do
           let(:action_name) { action }
 

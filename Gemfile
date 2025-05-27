@@ -8,40 +8,40 @@ gem "devise"
 
 gem "devise-jwt"
 
-gem 'jsonapi-serializer'
+gem "jsonapi-serializer"
 
 # serializer
-gem 'active_model_serializers'
+gem "active_model_serializers"
 
 # decorator
-gem 'draper'
+gem "draper"
 
 # to use form for each model
-gem 'virtus'
+gem "virtus"
 
 # to use oauth
-gem 'omniauth'
+gem "omniauth"
 
-gem 'omniauth-google-oauth2'
+gem "omniauth-google-oauth2"
 
 gem "omniauth-rails_csrf_protection"
 
-gem 'dotenv-rails', groups: [:development, :test]
+gem "dotenv-rails", groups: [ :development, :test ]
 
-gem 'google-apis-calendar_v3'
+gem "google-apis-calendar_v3"
 
 
 # pdf generator
-gem 'prawn'
+gem "prawn"
 
 # excel generator
-gem 'caxlsx_rails'
+gem "caxlsx_rails"
 
 # background jobs
 
-gem 'sidekiq'
+gem "sidekiq"
 
-gem 'redis'
+gem "redis"
 
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
@@ -55,6 +55,9 @@ gem "importmap-rails"
 gem "turbo-rails"
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "stimulus-rails"
+
+gem "rubocop", require: false
+
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
@@ -92,32 +95,32 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   # mail preview
-  gem 'letter_opener'
-  
-  gem 'faker'
+  gem "letter_opener"
 
-  gem 'shoulda-matchers'
-  
+  gem "faker"
+
+  gem "shoulda-matchers"
+
   # for debugging #  MRI (Matz's Ruby Interpreter) – the standard Ruby interpreter.
-  gem 'byebug'
+  gem "byebug"
 
   # rspec integration for rails
-  gem 'rspec-rails', '~> 6.1'
+  gem "rspec-rails", "~> 6.1"
 
   # to create test data factories
-  gem 'factory_bot_rails'
+  gem "factory_bot_rails"
 
   # it / feature testing (interact with app)
-  gem 'capybara'
+  gem "capybara"
 
   # clean database state between tests
-  gem 'database_cleaner'
+  gem "database_cleaner"
 
   # for task coverage
-  gem 'simplecov', require: false
+  gem "simplecov", require: false
 
   # for assigns keyword
-  gem 'rails-controller-testing'
+  gem "rails-controller-testing"
 end
 
 group :development do

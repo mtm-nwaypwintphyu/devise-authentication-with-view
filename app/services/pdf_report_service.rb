@@ -1,12 +1,12 @@
 class PdfReportService
-  def initialize 
+  def initialize
     @posts = posts
   end
 
   def generate
     html = ApplicationController.render(
-      template: 'posts/pdf_report',
-      layout: 'pdf',
+      template: "posts/pdf_report",
+      layout: "pdf",
       assigns: { posts: @posts }
     )
 

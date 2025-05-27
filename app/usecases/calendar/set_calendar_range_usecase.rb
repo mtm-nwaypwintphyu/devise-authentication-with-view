@@ -7,7 +7,7 @@ module Calendar
 
     def call
       today = @params[:date].present? ? Date.parse(@params[:date]) : Date.today
-      
+
       if @action_name == "all_holidays" || @action_name == "all_events"
         if @params[:month_only] == "true"
           first_day = today.beginning_of_month

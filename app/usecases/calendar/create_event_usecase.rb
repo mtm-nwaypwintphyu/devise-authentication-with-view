@@ -17,19 +17,19 @@ module Calendar
       event = Google::Apis::CalendarV3::Event.new(
         summary: @event_params[:name],
         description: @event_params[:description],
-        start: Google::Apis::CalendarV3::EventDateTime.new(   
+        start: Google::Apis::CalendarV3::EventDateTime.new(
           date_time: @event_params[:start_time].to_datetime.rfc3339,
-          time_zone: 'Asia/Yangon'  
-        ),          
-        end: Google::Apis::CalendarV3::EventDateTime.new(         
+          time_zone: "Asia/Yangon"
+        ),
+        end: Google::Apis::CalendarV3::EventDateTime.new(
           date_time: @event_params[:end_time].to_datetime.rfc3339,
-          time_zone: 'Asia/Yangon'
-        )           
+          time_zone: "Asia/Yangon"
+        )
       )
-      event = service.insert_event('primary', event)
-      { success: true, event: event } 
-    rescue Google::Apis::Error => e 
-      { success: false, errors: { api: "Failed to create event: #{e.message}" } }      
+      event = service.insert_event("primary", event)
+      { success: true, event: event }
+    rescue Google::Apis::Error => e
+      { success: false, errors: { api: "Failed to create event: #{e.message}" } }
     end
 
     private

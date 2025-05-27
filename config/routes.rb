@@ -2,10 +2,10 @@ Rails.application.routes.draw do
   get "home/index"
   # devise_for :users, controllers: { registrations: 'api/users/registrations' }
 
-  devise_for :users, controllers: { 
-    sessions: 'users/sessions',
-    registrations: 'users/registrations',
-    omniauth_callbacks: 'users/omniauth_callbacks' 
+  devise_for :users, controllers: {
+    sessions: "users/sessions",
+    registrations: "users/registrations",
+    omniauth_callbacks: "users/omniauth_callbacks"
   }
 
 
@@ -22,9 +22,9 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
-  resources :users, only: [:index, :show, :edit, :update, :destroy] 
+  resources :users, only: [ :index, :show, :edit, :update, :destroy ]
 
-  resources :calendar, only: [:index] do
+  resources :calendar, only: [ :index ] do
     collection do
       get :create_event_form
       post :create_event
@@ -35,14 +35,14 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'calendar/all_events', to: 'calendar#all_events', as: :all_events
-  get 'calendar/all_holidays', to: 'calendar#all_holidays', as: :all_holidays
+  get "calendar/all_events", to: "calendar#all_events", as: :all_events
+  get "calendar/all_holidays", to: "calendar#all_holidays", as: :all_holidays
 
-  get 'reports/generate_pdf', to: 'reports#generate_pdf'
-  get 'download_pdf', to: 'reports#download_pdf', as: :download_pdf
+  get "reports/generate_pdf", to: "reports#generate_pdf"
+  get "download_pdf", to: "reports#download_pdf", as: :download_pdf
 
   # download excel
-  get '/download_users_excel', to: 'reports#download_excel'
+  get "/download_users_excel", to: "reports#download_excel"
 
   resources :posts
   root to: "home#index"
@@ -52,5 +52,4 @@ Rails.application.routes.draw do
       get :export_csv
     end
   end
-
 end

@@ -5,7 +5,7 @@ require 'rails-controller-testing'
 SimpleCov.start 'rails'
 ENV['RAILS_ENV'] ||= 'test'
 require 'sidekiq/testing'
-Sidekiq::Testing.fake! 
+Sidekiq::Testing.fake!
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
@@ -42,7 +42,7 @@ RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.include FactoryBot::Syntax::Methods
   config.include Devise::Test::IntegrationHelpers, type: :request
-  # format 
+  # format
   # config.default_formatter = 'doc'
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
@@ -82,4 +82,3 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
-
