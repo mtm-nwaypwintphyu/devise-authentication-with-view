@@ -1,0 +1,52 @@
+
+<div class="container">
+  <h1 class="text-center my-4">BigQuery Tables</h1>
+
+  <% if flash[:notice] %>
+    <div class="alert alert-success col-6 alert-dismissible fade show mx-auto text-center p-2 small" role="alert">
+      <%= flash[:notice] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="transform: scale(0.7); margin-top: -4px;"></button>
+    </div>
+  <% end %>
+
+
+  <div class="mb-2 d-flex justify-content-between">
+    <div>
+      <%= link_to "Back to Datasets", bigquery_path , class: "btn btn-sm btn-success me-2" %>
+    </div>
+    <div>
+      <%= link_to "+ Create table", new_bigquery_create_table_path(@tables[0][:project_id], @tables[0][:dataset_id]), class: "btn btn-sm btn-success me-2" %>
+      <%= link_to "+ Upload table", bigquery_upload_table_form_path(@tables[0][:project_id], @tables[0][:dataset_id]), class: "btn btn-sm btn-success me-2" %>
+    </div>
+  </div>
+
+  <% if @tables.present? %>
+
+    <table class="table table-bordered table-striped">
+      <tr>
+        <th>No.</th>
+        <% @tables.first.keys.each do |key| %>
+          <th><%= key %></th>
+        <% end %>
+        <th>Detail</th>
+      </tr>
+      <% @tables.each_with_index do |table, index| %>
+          <tr> 
+            <td><%= index + 1 %></td>
+            <td><%= table[:table_id]%></td>
+            <td><%= table[:dataset_id]%></td>
+            <td><%= table[:project_id]%></td>
+            <td><%= table[:created_at]%></td>
+            <td><%= table[:table_type	]%></td>
+            <td><%= table[:expiration_time]%></td>
+            <td>
+               <%= link_to "View Table", bigquery_table_detail_path(project_id: table[:project_id], dataset_id: table[:dataset_id], table_id: table[:table_id]), class: "btn btn-sm btn-secondary" %>
+               <%= link_to "View Schema", bigquery_table_schema_path(project_id: table[:project_id], dataset_id: table[:dataset_id], table_id: table[:table_id]), class: "btn btn-sm btn-secondary" %>
+            </td>
+          </tr>
+      <% end %>
+    </table>
+  <% else %>
+    <p>No tables found.</p>
+  <% end %>
+</div>

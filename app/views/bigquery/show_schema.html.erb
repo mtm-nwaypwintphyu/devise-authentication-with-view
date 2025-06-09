@@ -1,0 +1,54 @@
+<%= render 'layouts/navbar' %>
+
+<div class="container">
+  <h2>Table Schema</h2>
+
+  <%= link_to "Back to Tables", bigquery_table_path(params[:project_id], params[:dataset_id]), class: "btn btn-sm btn-success me-2 my-3" %>
+  <% if @fields.present? %>
+    <h3>
+      <b>Table:</b>
+      <%= @table_id %>
+    </h3>
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Mode</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @fields.each do |field| %>
+          <% if field[:type].eql?("RECORD") %>
+            <td><%= field[:name] %></td>
+            <td><%= field[:type] %></td>
+            <td><%= field[:mode] %></td>
+            <td>
+              <%= link_to "Edit", bigquery_table_schema_edit_form_path(params[:project_id], params[:dataset_id]), class: "btn btn-sm btn-secondary" %>
+            </td>
+                <% field[:fields].each do |f| %>
+                  <tr>
+                    <td><%= "#{field[:name]} [#{f[:name]}]" %></td>
+                    <td><%= f[:type] %></td>
+                    <td><%= f[:mode] %></td>
+                    <td>
+                      <%= link_to "Edit", bigquery_table_schema_edit_form_path(params[:project_id], params[:dataset_id]), class: "btn btn-sm btn-secondary" %>
+                    </td>
+                  </tr>
+                <% end %>
+          <% else %>
+
+          <tr>
+            <td><%= field[:name] %></td>
+            <td><%= field[:type] %></td>
+            <td><%= field[:mode] %></td>
+          </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>No schema fields found for this table.</p>
+  <% end %>
+</div>

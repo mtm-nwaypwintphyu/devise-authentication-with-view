@@ -1,0 +1,39 @@
+<%= render 'layouts/navbar' %>
+
+<div class="container">
+  <h1 class="text-center my-4">BigQuery Datasets</h1>
+
+  <% if flash[:alert] %>
+    <div class="alert alert-danger col-6 alert-dismissible fade show mx-auto text-center p-2 small" role="alert">
+      <%= flash[:alert] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="transform: scale(0.7); margin-top: -4px;"></button>
+    </div>
+  <% end %>
+
+  <% if @datasets.present? %>
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Dataset ID</th>
+          <th>Project ID</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @datasets.each_with_index do |dataset, index| %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= dataset.dataset_id %></td>
+            <td><%= dataset.project_id %></td>
+            <td>
+              <%= link_to "Show tables", bigquery_table_path(dataset.project_id, dataset.dataset_id), class: "btn btn-sm btn-success" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="text-center">No datasets found.</p>
+  <% end %>
+</div>

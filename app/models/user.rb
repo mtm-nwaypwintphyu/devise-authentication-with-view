@@ -24,17 +24,8 @@ class User < ApplicationRecord
       user.google_oauth2_refresh_token = auth.credentials.refresh_token if auth.credentials.refresh_token.present?
       user.token_expires_at = Time.at(auth.credentials.expires_at)
       user.save!
+      user
     end
-  end
-
-  def google_oauth_credentials
-    Google::Auth::UserRefreshCredentials.new(
-      client_id: ENV['GOOGLE_CLIENT_ID'],
-      client_secret: ENV['GOOGLE_CLIENT_SECRET'],
-      scope: 'https://www.googleapis.com/auth/calendar.readonly',
-      access_token: google_oauth2_token,
-      refresh_token: google_oauth2_refresh_token,
-      expires_at: token_expires_at.to_i
-    )
-  end  
+  end 
 end
+  

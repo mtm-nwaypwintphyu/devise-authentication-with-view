@@ -32,8 +32,38 @@ Rails.application.routes.draw do
 
   get 'calendar/all_events', to: 'calendar#all_events', as: :all_events
   get 'calendar/all_holidays', to: 'calendar#all_holidays', as: :all_holidays
-  
+
+  # google sheets
+  get '/sheets', to: 'sheets#index'
+
+
+  # big query
+  get '/bigquery', to: 'bigquery#index'
+  get 'bigquery/table/:project_id/:dataset_id', to: 'bigquery#tables_index', as: 'bigquery_table'
+  get 'bigquery/datasets/:project_id/:dataset_id/tables/:table_id', to: 'bigquery#show_table', as: 'bigquery_table_detail'
+  get 'bigquery/datasets/schema/:project_id/:dataset_id/tables/:table_id', to: 'bigquery#show_schema', as: 'bigquery_table_schema'
+  get 'bigquery/datasets/schema/edit/:project_id/:dataset_id/tables/:table_id', to: 'bigquery#edit_schema_form', as: 'bigquery_table_schema_edit_form'
+  get 'bigquery/create_table/:project_id/:dataset_id', to: 'bigquery#new_create_table', as: 'new_bigquery_create_table'
+  post 'bigquery/create_table/:project_id/:dataset_id', to: 'bigquery#create_table', as: 'bigquery_create_table'
+  get 'bigquery/upload_table/:project_id/:dataset_id', to: 'bigquery#upload_table_form', as: 'bigquery_upload_table_form'
+  post 'bigquery/upload_table/:project_id/:dataset_id', to: 'bigquery#upload_table', as: 'bigquery_upload_table'
+
+  # api only # to delete
+  post 'bigquery/create_tables/:project_id/:dataset_id', to: 'bigquery#create_tables'
+
   resources :posts
   root to: "home#index"
+
+
+  # api
+  namespace :api do
+    namespace :v1 do
+      post 'auth/google', to: 'auth#google'
+      get 'bigquery/datasets', to: 'bigquery#index'
+      get 'bigquery/tables/:project_id/:dataset_id', to: 'bigquery#table_list'
+    
+      get 'bigquery/tables/:dataset_id/:table_id', to: 'bigquery#show_table'
+    end
+  end
 
 end

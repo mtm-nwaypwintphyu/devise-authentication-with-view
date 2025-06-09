@@ -1,0 +1,28 @@
+<%= render 'layouts/navbar' %>
+
+<div class="container">
+  <h1 class="text-center my-2">Upload Table Form</h1>
+
+  <%= link_to "Back", bigquery_path, class: "btn btn-sm btn-success me-2" %>
+  <% if flash[:alert] %>
+    <div class="alert alert-danger col-6 alert-dismissible fade show mx-auto text-center p-2 small" role="alert">
+      <%= flash[:alert] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="transform: scale(0.7); margin-top: -4px;"></button>
+    </div>
+  <% end %>
+
+  <%= form_with url: bigquery_upload_table_path(project_id: @project_id, dataset_id: @dataset_id), method: :post, local: true do |f| %>
+    <div class="mb-3">
+      <%= f.label :table_id, "Table Id" %>
+      <%= f.text_field :table_id, class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :file, "Choose CSV File" %>
+      <%= f.file_field :csv_file, class: "form-control" %>
+    </div>
+
+    <%= f.submit "Upload", class: "btn btn-primary" %>
+  <% end %>
+</end>
+

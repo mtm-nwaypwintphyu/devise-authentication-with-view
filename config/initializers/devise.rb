@@ -277,10 +277,11 @@ Devise.setup do |config|
   ENV['GOOGLE_CLIENT_ID'],
   ENV['GOOGLE_CLIENT_SECRET'],
   {
-    scope: "userinfo.email,userinfo.profile,calendar",
+    scope: 'calendar,email,profile,https://www.googleapis.com/auth/bigquery https://www.googleapis.com/auth/cloud-platform',
     prompt: 'select_account',
     access_type: 'offline',
-    prompt: 'consent'
+    prompt: 'consent',
+    redirect_uri: 'http://127.0.0.1:3000/users/auth/google_oauth2/callback'
   }
 
   # config.skip_session_storage = [:http_auth]

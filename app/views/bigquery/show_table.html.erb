@@ -1,0 +1,30 @@
+<%= render 'layouts/navbar' %>
+
+<div class="container">
+  <h2>Table Data</h2>
+
+  <%= link_to "Back to Tables", bigquery_table_path(params[:project_id], params[:dataset_id]), class: "btn btn-sm btn-success me-2 my-3" %>
+
+  <% if @table_data.present? %>
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <% @table_data.first.keys.each do |key| %>
+            <th><%= key %></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% @table_data.each_with_index do |table, index| %>
+          <tr>
+            <% table.keys.each do |key| %>
+              <td><%= table[key] %></td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>There is no data in this table.</p>
+  <% end %>
+</div>

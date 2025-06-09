@@ -28,7 +28,13 @@ gem "omniauth-rails_csrf_protection"
 
 gem 'dotenv-rails', groups: [:development, :test]
 
-gem 'google-apis-calendar_v3'
+gem 'google-apis-calendar_v3' 
+
+gem 'google-api-client'
+
+gem "google-cloud-bigquery"
+
+gem "google-id-token" # for custom api
 
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
@@ -55,6 +61,12 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
+
+gem "byebug"
+
+gem "redis"
+
+gem 'sidekiq', '7.1.6'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
