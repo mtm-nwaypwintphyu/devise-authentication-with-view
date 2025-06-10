@@ -6,17 +6,15 @@ class BigqueryController < ApplicationController
   skip_before_action :authenticate_user!, only: [:create_tables]
   skip_before_action :check_google_tokens, only: [:create_tables]
 
+  # get datasets
   def index
-    usecase = Bigquery::IndexUsecase.new(current_user)
-    begin
-      @datasets = usecase.call
-    rescue StandardError => e 
-      flash.now[:alert] = "Failed to load datasets from  BigQuery. Please try again later."
-      @datasets = []
-    end
+    @datasets = Bigquery::IndexUsecase.new(current_user).call
+  rescue => e
+    Rails.logger.error("BigQuery Index Error: #{e.message}")
+    flash.now[:alert] = "Failed to load datasets from BigQuery. Please try again  later"
   end
 
-  # create tables api 
+  # =============== test create tables api 
   def create_tables
     project_id = params[:project_id]
     dataset_id = params[:dataset_id]
@@ -40,11 +38,13 @@ class BigqueryController < ApplicationController
     end
   end
 
+  # render to create table form
   def new_create_table
     @dataset_id = params[:dataset_id]
     @project_id = params[:project_id]
   end
 
+  # table create
   def create_table
     project_id = params[:project_id]
     dataset_id = params[:dataset_id]
@@ -58,10 +58,11 @@ class BigqueryController < ApplicationController
       table_id,
       schema_fields
     )
+
     result = usecase.call
 
     if result[:success]
-      flash[:notice] = "Table '#{table_id}' created successfully."
+      flash[:notice] = result[:message]
       redirect_to bigquery_table_path(project_id, dataset_id)
     else
       flash[:alert] = "Failed to create table #{table_id}. #{result[:error]}"
@@ -91,11 +92,11 @@ class BigqueryController < ApplicationController
 
     result = usecase.call
     if result[:success]
-      flash[:notice] = "Table '#{table_id}' uploaded successfully."
-      redirect_to bigquery_table_path(project_id,dataset_id)
+      flash[:notice] = result[:message]
+      redirect_to bigquery_table_path(project_id, dataset_id)
     else
       flash[:alert] = "Failed. #{result[:error]}"
-      redirect_to bigquery_upload_table_path(project_id,dataset_id)
+      redirect_to bigquery_upload_table_path(project_id, dataset_id)
     end
   end
 
@@ -108,9 +109,13 @@ class BigqueryController < ApplicationController
       dataset_id
       )
 
-    @tables = usecase.call
-    @tables
-
+    result = usecase.call
+    if result[:success]
+      @tables = result[:tables]
+    else
+      @tables = []
+      flash.now[:error] = result[:error]
+    end
   rescue StandardError => e
     flash.now[:alert] = "Failed to load tables from BigQuery. Please try again later. #{e}"
     @tables = []
@@ -158,16 +163,26 @@ class BigqueryController < ApplicationController
     p "hello"
   end
 
-  private
+ private
 
   def check_google_tokens
     if current_user.google_oauth2_token.blank? || token_expired?
-      render 'bigquery/redirect_to_google', layout: false
+      if current_user.google_oauth2_refresh_token.present?
+        unless current_user.refresh_access_token
+          redirect_to_google_login and return
+        end
+      else
+        redirect_to_google_login and return
+      end
     end
   end
 
   def token_expired?
     current_user.token_expires_at.nil? || current_user.token_expires_at < Time.current
+  end
+
+  def redirect_to_google_login
+    redirect_to user_google_oauth2_omniauth_authorize_path 
   end
 
   def schema_params

@@ -1,61 +1,57 @@
 module Bigquery
   class CreateTableUsecase
-
     def initialize(user, project_id, dataset_id, table_id, schema_fields = [])
       @user = user
       @project_id = project_id
       @dataset_id = dataset_id
       @table_id = table_id
-      @schema_fields = schema_fields
+      @schema_fields = sanitize_schema_fields(schema_fields)
     end
 
     def call
-      return { success: false, error: "Table ID is empty." } if @table_id.blank?
+      return failure("Table ID is empty.") if @table_id.blank?
 
-      field_names = @schema_fields.map { |f| f[:name].to_s.strip }
-      duplicates = field_names.select { |name| field_names.count(name) > 1 }.uniq
-      unless duplicates.empty?
-        return { success: false, error: "Duplicate field names '#{duplicates.join(', ')}'  found." }
-      end
+      duplicates = find_duplicate_field_names(@schema_fields)
+      return failure("Duplicate field names '#{duplicates.join(', ')}' found.") unless duplicates.empty?
 
-      credentials = GoogleCredentialsService.new(@user).credentials
-      credentials.fetch_access_token!
-
-      bigquery = Google::Cloud::Bigquery.new(
-        project_id: @project_id,
-        credentials: credentials
+      Bigquery::CreateTableJob.perform_async(
+        @user.id,
+        @project_id,
+        @dataset_id,
+        @table_id,
+        @schema_fields.map(&:to_h) 
       )
 
-      dataset = bigquery.dataset(@dataset_id)
-      return { success: false, error: "Dataset not found." } unless dataset
+      success("Table creation is running in background.")
+    rescue ArgumentError => e
+      failure(e.message)
+    rescue StandardError => e
+      failure("Unexpected error: #{e.message}")
+    end
 
-      table = dataset.create_table(@table_id) do |schema|
-        @schema_fields.each do |field|
-          field = field.to_h.symbolize_keys
-          name = field[:name].to_s.strip
-          type = field[:type].to_s.downcase.to_sym
+    private
 
-          if name.present? && schema.respond_to?(type)
-            schema.send(type, name)
-          else
-            raise ArgumentError, "Invalid schema field: #{field.inspect}"
-          end
+    def success(message)
+      { success: true, message: message }
+    end
+
+    def failure(error)
+      { success: false, error: error }
+    end
+
+    def sanitize_schema_fields(fields)
+      fields.map do |field|
+        if field.is_a?(ActionController::Parameters)
+          field.permit(:name, :type).to_h
+        else
+          raise ArgumentError, "Invalid field format: #{field.inspect}"
         end
       end
+    end
 
-      { success: true, table: table }
-
-    rescue Google::Cloud::AlreadyExistsError
-      { success: false, error: "The table '#{@table_id}' already exists in dataset '#{@dataset_id}'." }
-
-    rescue Google::Cloud::Error => e
-      { success: false, error: "Google Cloud error: #{e.message}" }
-
-    rescue ArgumentError => e
-      { success: false, error: e.message }
-
-    rescue StandardError => e
-      { success: false, error: "Unexpected error: #{e.message}" }
+    def find_duplicate_field_names(fields)
+      names = fields.map { |f| f[:name].to_s.strip }
+      names.select { |name| names.count(name) > 1 }.uniq
     end
   end
 end

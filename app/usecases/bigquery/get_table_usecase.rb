@@ -18,9 +18,9 @@ module Bigquery
       )
 
       dataset = bigquery.dataset(@dataset_id)
-      return [] unless dataset
+      return { success: false, error: "Fetch table data failed. Invalid dataset id or project id !" } unless dataset
 
-      max = 200
+      max = 1000
       all_tables = []
       tables_page = dataset.tables(max: max)
       
@@ -30,7 +30,7 @@ module Bigquery
         tables_page = tables_page.next
       end
 
-      all_tables.take(max).map do |table|
+      tables =all_tables.take(max).map do |table|
         {
           table_id: table.table_id,
           dataset_id: table.dataset_id,
@@ -40,6 +40,7 @@ module Bigquery
           expiration_time: table.gapi.expiration_time ? Time.at(table.gapi.expiration_time / 1000) : nil
         }
       end
+      return { success: true, tables: tables }
 
     rescue Google::Cloud::Error => e
       Rails.logger.error("BigQuery Error: #{e.message}")

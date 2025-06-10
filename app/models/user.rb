@@ -27,5 +27,30 @@ class User < ApplicationRecord
       user
     end
   end 
+
+   def refresh_access_token
+    return false unless google_oauth2_refresh_token.present?
+
+    client_id = ENV['GOOGLE_CLIENT_ID']
+    client_secret = ENV['GOOGLE_CLIENT_SECRET']
+
+    response = Faraday.post('https://oauth2.googleapis.com/token', {
+      client_id: client_id,
+      client_secret: client_secret,
+      refresh_token: google_oauth2_refresh_token,
+      grant_type: 'refresh_token'
+    })
+
+    if response.status == 200
+      body = JSON.parse(response.body)
+      update(
+        google_oauth2_token: body['access_token'],
+        token_expires_at: Time.now + body['expires_in'].to_i.seconds
+      )
+      true
+    else
+      false
+    end
+  end
 end
   
