@@ -22,22 +22,15 @@ module Bigquery
         @schema_fields.map(&:to_h) 
       )
 
-      success("Table creation is running in background.")
+      return { success: true, message: "Table creation is running in background." }
     rescue ArgumentError => e
-      failure(e.message)
+      return  { success: false, error: e.message }
+
     rescue StandardError => e
-      failure("Unexpected error: #{e.message}")
+      return { success: false, error: "Unexpected error: #{e.message}" }
     end
 
     private
-
-    def success(message)
-      { success: true, message: message }
-    end
-
-    def failure(error)
-      { success: false, error: error }
-    end
 
     def sanitize_schema_fields(fields)
       fields.map do |field|

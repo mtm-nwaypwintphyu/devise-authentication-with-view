@@ -18,7 +18,6 @@ module Bigquery
       )
 
       dataset = bigquery.dataset(@dataset_id)
-      return { success: false, error: "Fetch table data failed. Invalid dataset id or project id !" } unless dataset
 
       max = 1000
       all_tables = []

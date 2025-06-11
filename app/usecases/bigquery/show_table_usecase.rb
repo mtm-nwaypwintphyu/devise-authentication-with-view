@@ -21,7 +21,7 @@ module Bigquery
       return [] unless dataset
 
       table = dataset.table(@table_id)
-      table ? table.data.to_a : []
+      return { success: true , table_data: table.data.to_a} if table
     rescue Google::Cloud::Error, StandardError => e
       Rails.logger.error("BigQuery Table Data Error: #{e.message}")
       []

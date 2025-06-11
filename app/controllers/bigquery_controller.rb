@@ -5,13 +5,21 @@ class BigqueryController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [ :create_tables]
   skip_before_action :authenticate_user!, only: [:create_tables]
   skip_before_action :check_google_tokens, only: [:create_tables]
+  include ::ValidateBigquery
 
   # get datasets
   def index
     @datasets = Bigquery::IndexUsecase.new(current_user).call
+    if @datasets
+      @datasets
+      @error_flg = false
+    else
+      @datasets = []
+    end
   rescue => e
     Rails.logger.error("BigQuery Index Error: #{e.message}")
     flash.now[:alert] = "Failed to load datasets from BigQuery. Please try again  later"
+    @error_flg = true
   end
 
   # =============== test create tables api 
@@ -42,6 +50,14 @@ class BigqueryController < ApplicationController
   def new_create_table
     @dataset_id = params[:dataset_id]
     @project_id = params[:project_id]
+    
+    validate_result = validate_query(current_user.id, @project_id, @dataset_id)
+    
+    if validate_result[:error]
+      flash[:alert] = validate_result[:error]
+    else
+      flash[:alert] = nil
+    end
   end
 
   # table create
@@ -50,6 +66,12 @@ class BigqueryController < ApplicationController
     dataset_id = params[:dataset_id]
     table_id = params[:table_id]
     schema_fields = schema_params[:schema_fields] || []
+
+    validate_result = validate_query(current_user.id, project_id, dataset_id)
+    
+    if validate_result[:error]
+      redirect_to new_bigquery_create_table_path(project_id,dataset_id) and return
+    end
 
     usecase = Bigquery::CreateTableUsecase.new(
       current_user,
@@ -74,6 +96,13 @@ class BigqueryController < ApplicationController
   def upload_table_form
     @project_id = params[:project_id]
     @dataset_id = params[:dataset_id]
+    validate_result = validate_query(current_user.id, @project_id, @dataset_id)
+    
+    if validate_result[:error]
+      flash[:alert] = validate_result[:error]
+    else
+      flash[:alert] = nil
+    end
   end
 
   def upload_table
@@ -81,6 +110,13 @@ class BigqueryController < ApplicationController
     dataset_id = params[:dataset_id]
     table_id = params[:table_id]
     csv = params[:csv_file]
+    
+    validate_result = validate_query(current_user.id, project_id, dataset_id)
+    
+    if validate_result[:error]
+      redirect_to new_bigquery_create_table_path(project_id,dataset_id) and return
+      flash[:error] = result[:error]
+    end
 
     usecase = Bigquery::UploadTableUsecase.new(
       current_user,
@@ -103,6 +139,19 @@ class BigqueryController < ApplicationController
   def tables_index
     project_id = params[:project_id]
     dataset_id = params[:dataset_id]
+    @error_flg = nil
+    
+    validate_result = validate_query(current_user.id, project_id, dataset_id)
+    if validate_result[:error]
+      flash[:error] = validate_result[:error]
+      @error_flg = true
+      @tables = []
+      return
+    else
+      flash[:error] = nil
+      @error_flg = false
+    end
+
     usecase = Bigquery::GetTableUsecase.new(
       current_user,
       project_id, 
@@ -112,13 +161,16 @@ class BigqueryController < ApplicationController
     result = usecase.call
     if result[:success]
       @tables = result[:tables]
+      @error_flg = false
     else
-      @tables = []
       flash.now[:error] = result[:error]
+      @error_flg = true
+      @tables = []
     end
   rescue StandardError => e
     flash.now[:alert] = "Failed to load tables from BigQuery. Please try again later. #{e}"
     @tables = []
+    @error_flg = true
   end
 
 
@@ -127,20 +179,46 @@ class BigqueryController < ApplicationController
     table_id = params[:table_id]
     project_id = params[:project_id]
 
-    usecase = Bigquery::ShowTableUsecase.new(current_user, project_id, dataset_id, table_id: table_id)
+    result = validate_query(current_user.id, project_id, dataset_id,table_id: table_id)
+    
+    if result[:error]
+      flash[:error] = result[:error]
+      @error_flg = true
+    else
+      flash[:error] = nil
+      @error_flg = false
+    end
 
-    begin
-      @table_data = usecase.call
+    usecase = Bigquery::ShowTableUsecase.new(current_user, project_id, dataset_id, table_id: table_id)
+      result = usecase.call
+      if result[:success]
+        @table_data = result[:table_data]
+        @error_flg = false
+      else
+        flash.now[:error] = result[:error]
+        @error_flg = false
+        @table_data = []
+      end
     rescue StandardError => e
       flash.now[:alert] = "Failed to load table data from BigQuery. Please try again later"
       @table_data = []
-    end
+      @error_flg = true
   end
 
   def show_schema
     project_id = params[:project_id]
     dataset_id = params[:dataset_id]
     table_id = params[:table_id]
+
+    result = validate_query(current_user.id, project_id, dataset_id,table_id: table_id)
+    
+    if result[:error]
+      flash[:error] = result[:error]
+      @error_flg = true
+    else
+      flash[:error] = nil
+      @error_flg = false
+    end
 
     usecase = Bigquery::GetSchemaUsecase.new(
       current_user,
@@ -153,9 +231,9 @@ class BigqueryController < ApplicationController
     if result[:success]
       @fields = result[:fields]
       @table_id = table_id
+      @error_flg = false
     else
       flash[:alert] = result[:error]
-      @fields = []
     end
   end
 

@@ -2,7 +2,14 @@
 
 <div class="container col-6">
   <h2 class="text-center my-4">Create BigQuery Table</h2>
-
+  
+  <% if flash[:error] %>
+    <div class="alert alert-danger col-6 alert-dismissible fade show mx-auto text-center p-2 small" role="alert">
+      <%= flash[:error] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="transform: scale(0.7); margin-top: -4px;"></button>
+    </div>
+  <% end %>
+  
   <%= link_to "Back", bigquery_path, class: "btn btn-sm btn-success mb-3" %>
 
   <% if flash[:alert] %>

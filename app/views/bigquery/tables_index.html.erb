@@ -1,4 +1,6 @@
 
+<%= render 'layouts/navbar' %>
+
 <div class="container">
   <h1 class="text-center my-4">BigQuery Tables</h1>
 
@@ -15,45 +17,44 @@
     </div>
   <% end %>
 
+  <div class="mb-2">
+    <%= link_to "Back to Datasets", bigquery_path , class: "btn btn-sm btn-success me-2" %>
+  </div>
+
   <% if @tables.present? %>
 
-  <div class="mb-2 d-flex justify-content-between">
-    <div>
-      <%= link_to "Back to Datasets", bigquery_path , class: "btn btn-sm btn-success me-2" %>
-    </div>
+  <div class="mb-2 d-flex justify-content-end">
     <div>
       <%= link_to "+ Create table", new_bigquery_create_table_path(@tables[0][:project_id], @tables[0][:dataset_id]), class: "btn btn-sm btn-success me-2" %>
       <%= link_to "+ Upload table", bigquery_upload_table_form_path(@tables[0][:project_id], @tables[0][:dataset_id]), class: "btn btn-sm btn-success me-2" %>
     </div>
   </div>
-
-
-    <table class="table table-bordered table-striped">
-      <tr>
-        <th>No.</th>
-        <% @tables.first.keys.each do |key| %>
-          <th><%= key %></th>
-        <% end %>
-        <th>Detail</th>
-      </tr>
-      <% @tables.each_with_index do |table, index| %>
-          <tr> 
-            <td><%= index + 1 %></td>
-            <td><%= table[:table_id]%></td>
-            <td><%= table[:dataset_id]%></td>
-            <td><%= table[:project_id]%></td>
-            <td><%= table[:created_at]%></td>
-            <td><%= table[:table_type	]%></td>
-            <td><%= table[:expiration_time]%></td>
-            <td>
-               <%= link_to "View Table", bigquery_table_detail_path(project_id: table[:project_id], dataset_id: table[:dataset_id], table_id: table[:table_id]), class: "btn btn-sm btn-secondary" %>
-               <%= link_to "Schema", bigquery_table_schema_path(project_id: table[:project_id], dataset_id: table[:dataset_id], table_id: table[:table_id]), class: "btn btn-sm btn-success" %>
-               <%= link_to "Delete", bigquery_table_schema_path(project_id: table[:project_id], dataset_id: table[:dataset_id], table_id: table[:table_id]), class: "btn btn-sm btn-danger" %>
-            </td>
-          </tr>
+  <table class="table table-bordered table-striped">
+    <tr>
+      <th>No.</th>
+      <% @tables.first.keys.each do |key| %>
+        <th><%= key %></th>
       <% end %>
-    </table>
-  <% else %>
+      <th>Detail</th>
+    </tr>
+    <% @tables.each_with_index do |table, index| %>
+        <tr> 
+          <td><%= index + 1 %></td>
+          <td><%= table[:table_id]%></td>
+          <td><%= table[:dataset_id]%></td>
+          <td><%= table[:project_id]%></td>
+          <td><%= table[:created_at]%></td>
+          <td><%= table[:table_type	]%></td>
+          <td><%= table[:expiration_time]%></td>
+          <td>
+              <%= link_to "View Table", bigquery_table_detail_path(project_id: table[:project_id], dataset_id: table[:dataset_id], table_id: table[:table_id]), class: "btn btn-sm btn-secondary" %>
+              <%= link_to "Schema", bigquery_table_schema_path(project_id: table[:project_id], dataset_id: table[:dataset_id], table_id: table[:table_id]), class: "btn btn-sm btn-success" %>
+              <%= link_to "Delete", bigquery_table_schema_path(project_id: table[:project_id], dataset_id: table[:dataset_id], table_id: table[:table_id]), class: "btn btn-sm btn-danger" %>
+          </td>
+        </tr>
+    <% end %>
+  </table>
+  <% elsif !@error_flg %>
     <p>No tables found.</p>
   <% end %>
 </div>
