@@ -10,24 +10,21 @@ module Bigquery
     end
 
     def call
-      key = cache_key(@user.id,@project_id,@dataset_id,@table_id)
-      table = Rails.cache.read(key)
-      unless table
-        Bigquery::ShowTableJob.perform_async(@user.id,@project_id,@dataset_id,@table_id)
-        return []
-      end
+      credentials = GoogleCredentialsService.new(@user).credentials
 
-      table
+      bigquery = Google::Cloud::Bigquery.new(
+        project_id: @project_id,
+        credentials: credentials
+      )
 
+      dataset = bigquery.dataset(@dataset_id)
+      return [] unless dataset
+
+      table = dataset.table(@table_id)
+      table ? table.data.to_a : []
     rescue Google::Cloud::Error, StandardError => e
       Rails.logger.error("BigQuery Table Data Error: #{e.message}")
       []
-    end
-
-    private
-
-    def cache_key(user_id,project_id,dataset_id,table_id)
-      "show_table_#{user_id}_#{project_id}_#{dataset_id}_#{table_id}"
     end
   end
 end
