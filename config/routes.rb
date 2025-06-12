@@ -39,7 +39,18 @@ Rails.application.routes.draw do
 
   # big query
   get '/bigquery', to: 'bigquery#index'
+
+  # dataset
+  get 'bigquery/create_dataset/:project_id', to: 'bigquery#new_create_dataset', as: 'bigquery_create_dataset_form'
+  post 'bigquery/create_dataset/:project_id', to: 'bigquery#create_dataset', as: 'bigquery_create_dataset'
+  post 'bigquery/:project_id/:dataset_id', to: 'bigquery#delete_dataset', as: 'bigquery_delete_dataset'
+
+  # table
   get 'bigquery/table/:project_id/:dataset_id', to: 'bigquery#tables_index', as: 'bigquery_table'
+  post 'bigquery/table/:project_id/:dataset_id/:table_id', to: 'bigquery#delete_table', as: 'bigquery_delete_table'
+
+
+  #
   get 'bigquery/datasets/:project_id/:dataset_id/tables/:table_id', to: 'bigquery#show_table', as: 'bigquery_table_detail'
   get 'bigquery/datasets/schema/:project_id/:dataset_id/tables/:table_id', to: 'bigquery#show_schema', as: 'bigquery_table_schema'
   get 'bigquery/datasets/schema/edit/:project_id/:dataset_id/tables/:table_id', to: 'bigquery#edit_schema_form', as: 'bigquery_table_schema_edit_form'

@@ -10,6 +10,15 @@
     </div>
   <% end %>
 
+   <% if flash[:notice] %>
+    <div class="alert alert-success col-6 alert-dismissible fade show mx-auto text-center p-2 small" role="alert">
+      <%= flash[:notice] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="transform: scale(0.7); margin-top: -4px;"></button>
+    </div>
+  <% end %>
+
+  <%= link_to "+ Create Datasets", bigquery_create_dataset_form_path(project_id: @project_id) , class: "mb-2 btn btn-sm btn-success" %>
+  
   <% if @datasets.present? %>
     <table class="table table-bordered table-striped">
       <thead>
@@ -28,6 +37,9 @@
             <td><%= dataset.project_id %></td>
             <td>
               <%= link_to "Show tables", bigquery_table_path(dataset.project_id, dataset.dataset_id), class: "btn btn-sm btn-success" %>
+              <%= form_with url: bigquery_delete_dataset_path(dataset.project_id, dataset.dataset_id), method: :post, class: "d-inline" do %>
+                <%= submit_tag "Delete dataset", class: "btn btn-sm btn-danger", data: { confirm: "Are you sure you want to delete this dataset?" } %>
+              <% end %>
             </td>
           </tr>
         <% end %>

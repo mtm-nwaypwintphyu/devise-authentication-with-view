@@ -8,27 +8,28 @@ module Bigquery
       @schema_fields = sanitize_schema_fields(schema_fields)
     end
 
-    def call
-      return failure("Table ID is empty.") if @table_id.blank?
+   def call
+      return { success: false, error: "Table ID is empty." } if @table_id.blank?
 
       duplicates = find_duplicate_field_names(@schema_fields)
-      return failure("Duplicate field names '#{duplicates.join(', ')}' found.") unless duplicates.empty?
+      return { success: false, error: "Duplicate field names '#{duplicates.join(', ')}' found." } unless duplicates.empty?
 
       Bigquery::CreateTableJob.perform_async(
         @user.id,
         @project_id,
         @dataset_id,
         @table_id,
-        @schema_fields.map(&:to_h) 
+        @schema_fields.map(&:to_h)
       )
-
-      return { success: true, message: "Table creation is running in background." }
+      { success: true, message: "Table created successully." }
     rescue ArgumentError => e
-      return  { success: false, error: e.message }
-
+      Rails.logger.error("Argument error in create table usecase: #{e.message}")
+      { success: false, error: e.message }
     rescue StandardError => e
-      return { success: false, error: "Unexpected error: #{e.message}" }
+      Rails.logger.error("Unexpected error in create table usecase: #{e.message}")
+      { success: false, error: "Unexpected error: #{e.message}" }
     end
+
 
     private
 
@@ -46,5 +47,6 @@ module Bigquery
       names = fields.map { |f| f[:name].to_s.strip }
       names.select { |name| names.count(name) > 1 }.uniq
     end
+
   end
 end

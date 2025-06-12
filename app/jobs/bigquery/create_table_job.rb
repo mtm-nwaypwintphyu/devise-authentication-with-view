@@ -4,7 +4,10 @@ module Bigquery
 
     def perform(user_id, project_id, dataset_id, table_id, schema_fields)
       user = User.find_by(id: user_id)
-      return unless user
+      unless user
+        Rails.logger.error("User with ID #{user_id} not found.")
+        return
+      end
 
       credentials = GoogleCredentialsService.new(user).credentials
       credentials.fetch_access_token!
@@ -15,7 +18,10 @@ module Bigquery
       )
 
       dataset = bigquery.dataset(dataset_id)
-      return unless dataset
+      unless dataset
+        Rails.logger.error("Dataset '#{dataset_id}' not found in project '#{project_id}'.")
+        return
+      end
 
       dataset.create_table(table_id) do |schema|
         schema_fields.each do |field|
@@ -31,9 +37,11 @@ module Bigquery
         end
       end
     rescue Google::Cloud::AlreadyExistsError
-      Rails.logger.warn("[CreateTableJob] Table '#{table_id}' already exists.")
+      Rails.logger.warn("Table '#{table_id}' already exists(in create table job).")
+    rescue ArgumentError => e
+      Rails.logger.error("Argument error: #{e.message} (in create table job).")
     rescue => e
-      Rails.logger.error("[CreateTableJob] Failed to create table: #{e.message}")
+      Rails.logger.error("Failed to create table: #{e.message} (in create table job).")
     end
   end
 end

@@ -1,0 +1,25 @@
+<%= render 'layouts/navbar' %>
+
+<div class="container col-6">
+  <h1 class="text-center my-4">Create Dataset</h1>
+
+  <% if flash[:alert] %>
+    <div class="alert alert-danger col-6 alert-dismissible fade show mx-auto text-center p-2 small" role="alert">
+      <%= flash[:alert] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="transform: scale(0.7); margin-top: -4px;"></button>
+    </div>
+  <% end %>
+
+  <%= link_to "Back", bigquery_path, class: "btn btn-sm btn-success mb-3" %>
+
+    <%= form_with url: bigquery_create_dataset_path(project_id: @project_id), method: :post, local: true do |f| %>
+      <div class="mb-3">
+        <%= f.label :dataset_id, "Dataset ID", class: "form-label" %>
+        <%= f.text_field :dataset_id, class: "form-control" %>
+      </div>
+
+      <div class="text-center">
+        <%= f.submit "Create Dataset", class: "btn btn-success" %>
+      </div>
+    <% end %>
+</div>

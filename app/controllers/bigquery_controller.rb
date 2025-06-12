@@ -11,16 +11,91 @@ class BigqueryController < ApplicationController
   def index
     @datasets = Bigquery::IndexUsecase.new(current_user).call
     if @datasets
+      @project_id = @datasets.first.project_id
       @datasets
       @error_flg = false
     else
       @datasets = []
     end
+
   rescue => e
     Rails.logger.error("BigQuery Index Error: #{e.message}")
     flash.now[:alert] = "Failed to load datasets from BigQuery. Please try again  later"
     @error_flg = true
   end
+  
+
+  # create dataset form
+  def new_create_dataset
+    @project_id = params[:project_id]
+    
+    validate_result = validate_query(current_user.id, project_id: @project_id)
+    
+    if validate_result[:error]
+      flash[:alert] = validate_result[:error]
+    else
+      flash[:alert] = nil
+    end
+  end
+
+  def create_dataset
+    @project_id = params[:project_id]
+    dataset_id = params[:dataset_id]
+
+    validate_result = validate_query(current_user.id, project_id: @project_id)
+
+    if validate_result[:error]
+      flash[:alert] = validate_result[:error]
+      render :new_create_dataset and return
+    end
+
+    usecase = Bigquery::CreateDatasetUsecase.new(current_user, @project_id, dataset_id)
+    result = usecase.call
+
+    if result[:success]
+      flash[:notice] = result[:message]
+      redirect_to bigquery_path
+    else
+      flash[:alert] = result[:error]
+      render :new_create_dataset
+    end
+  rescue StandardError => e
+    flash[:alert] = "Failed to create dataset. Please try again later. #{e}"
+    render :new_create_dataset
+  end
+
+  # delete dataset
+  def delete_dataset
+    project_id = params[:project_id]
+    dataset_id = params[:dataset_id]
+    
+    validate_result = validate_query(current_user.id, project_id: project_id, dataset_id: dataset_id)
+
+    if validate_result[:success] && validate_result[:bigquery]
+     @bigquery = validate_result[:bigquery]
+     @dataset = @bigquery.dataset(dataset_id)
+
+    else
+      flash[:alert] = validate_result[:error]
+      redirect_to bigquery_path and return
+    end
+
+    usecase = Bigquery::DeleteDatasetUsecase.new(@dataset)
+    result = usecase.call
+
+    if result[:success]
+      flash[:notice] = result[:message]
+    else
+      flash[:alert] = result[:error]
+    end
+
+    redirect_to bigquery_path
+
+  rescue StandardError => e
+    flash[:alert] = "Failed to delete dataset. Please try again later. #{e.message}"
+    redirect_to bigquery_path
+  end
+
 
   # =============== test create tables api 
   def create_tables
@@ -46,31 +121,75 @@ class BigqueryController < ApplicationController
     end
   end
 
+  # get table list
+  def tables_index
+    @project_id = params[:project_id]
+    @dataset_id = params[:dataset_id]
+    @tables = []
+    @error_flg = false
+    
+    validate_result = validate_query(current_user.id, project_id: @project_id, dataset_id: @dataset_id)
+
+    unless validate_result[:success] && validate_result[:bigquery]
+      flash[:error] = validate_result[:error] || "Validation failed"
+      @error_flg = true
+      return
+    end
+
+    @bigquery = validate_result[:bigquery]
+    @dataset = @bigquery.dataset(@dataset_id)
+    unless @dataset
+      flash[:error] = "Dataset not found or inaccessible"
+      @error_flg = true
+      return
+    end
+
+    usecase = Bigquery::GetTableUsecase.new(@dataset)
+    result = usecase.call
+
+    if result[:success]
+      @tables = result[:tables]
+      @project_id 
+      @dataset_id
+    else
+      flash.now[:error] = result[:error] 
+      @error_flg = true
+    end
+  rescue StandardError => e
+    Rails.logger.error("Error in tables_index: #{e.message}")
+    flash.now[:alert] = "Failed to load tables from BigQuery. Please try again later."
+    @error_flg = true
+    @tables = []
+  end
+
   # render to create table form
   def new_create_table
     @dataset_id = params[:dataset_id]
     @project_id = params[:project_id]
-    
-    validate_result = validate_query(current_user.id, @project_id, @dataset_id)
-    
-    if validate_result[:error]
-      flash[:alert] = validate_result[:error]
-    else
-      flash[:alert] = nil
+
+    validate_result = validate_query(current_user.id, project_id: @project_id, dataset_id: @dataset_id)
+    unless validate_result[:success] 
+      flash[:error] = validate_result[:error] || "Validation failed"
+      @error_flg = true
+      return
     end
+  rescue => e
+    flash[:alert] = "An unexpected error occurred. Please try again later."
+    redirect_to bigquery_path
   end
 
-  # table create
+  # create table
   def create_table
     project_id = params[:project_id]
     dataset_id = params[:dataset_id]
     table_id = params[:table_id]
     schema_fields = schema_params[:schema_fields] || []
 
-    validate_result = validate_query(current_user.id, project_id, dataset_id)
-    
+    validate_result = validate_query(current_user.id, project_id: project_id, dataset_id: dataset_id)
+
     if validate_result[:error]
-      redirect_to new_bigquery_create_table_path(project_id,dataset_id) and return
+      flash[:error] = validate_result[:error]
+      redirect_to new_bigquery_create_table_path(project_id, dataset_id) and return
     end
 
     usecase = Bigquery::CreateTableUsecase.new(
@@ -82,27 +201,30 @@ class BigqueryController < ApplicationController
     )
 
     result = usecase.call
-
     if result[:success]
       flash[:notice] = result[:message]
       redirect_to bigquery_table_path(project_id, dataset_id)
     else
-      flash[:alert] = "Failed to create table #{table_id}. #{result[:error]}"
+      flash[:error] = result[:error]
       redirect_to new_bigquery_create_table_path(project_id, dataset_id)
     end
+  rescue StandardError => e
+    Rails.logger.error("Error in create_table: #{e.message}")
+    flash[:error] = "An unexpected error occurred while creating the table. Please try again."
+    redirect_to new_bigquery_create_table_path(project_id, dataset_id)
   end
-
 
   def upload_table_form
     @project_id = params[:project_id]
     @dataset_id = params[:dataset_id]
-    validate_result = validate_query(current_user.id, @project_id, @dataset_id)
+    validate_result = validate_query(current_user.id, project_id:  @project_id, dataset_id:  @dataset_id)
     
-    if validate_result[:error]
-      flash[:alert] = validate_result[:error]
-    else
-      flash[:alert] = nil
+    unless validate_result[:success] 
+      flash[:error] = validate_result[:error] || "Validation failed"
+      @error_flg = true
+      return
     end
+
   end
 
   def upload_table
@@ -136,50 +258,13 @@ class BigqueryController < ApplicationController
     end
   end
 
-  def tables_index
-    project_id = params[:project_id]
-    dataset_id = params[:dataset_id]
-    @error_flg = nil
-    
-    validate_result = validate_query(current_user.id, project_id, dataset_id)
-    if validate_result[:error]
-      flash[:error] = validate_result[:error]
-      @error_flg = true
-      @tables = []
-      return
-    else
-      flash[:error] = nil
-      @error_flg = false
-    end
-
-    usecase = Bigquery::GetTableUsecase.new(
-      current_user,
-      project_id, 
-      dataset_id
-      )
-
-    result = usecase.call
-    if result[:success]
-      @tables = result[:tables]
-      @error_flg = false
-    else
-      flash.now[:error] = result[:error]
-      @error_flg = true
-      @tables = []
-    end
-  rescue StandardError => e
-    flash.now[:alert] = "Failed to load tables from BigQuery. Please try again later. #{e}"
-    @tables = []
-    @error_flg = true
-  end
-
 
   def show_table
     dataset_id = params[:dataset_id]
     table_id = params[:table_id]
     project_id = params[:project_id]
 
-    result = validate_query(current_user.id, project_id, dataset_id,table_id: table_id)
+    result = validate_query(current_user.id, project_id: project_id, dataset_id: dataset_id,table_id: table_id)
     
     if result[:error]
       flash[:error] = result[:error]
@@ -200,17 +285,61 @@ class BigqueryController < ApplicationController
         @table_data = []
       end
     rescue StandardError => e
-      flash.now[:alert] = "Failed to load table data from BigQuery. Please try again later"
+      flash.now[:error] = "Failed to load table data from BigQuery. Please try again later"
       @table_data = []
       @error_flg = true
   end
+
+  # delete table
+  def delete_table
+    project_id = params['project_id']
+    dataset_id = params['dataset_id']
+    table_id = params['table_id']
+    
+
+    validate_result = validate_query(current_user.id, project_id: project_id, dataset_id: dataset_id,table_id: table_id)
+    unless validate_result[:success]
+      flash[:error] = validate_result[:error] || "Validation failed"
+      @error_flg = true
+      return
+    end
+
+    @bigquery = validate_result[:bigquery]
+    @dataset = @bigquery.dataset(dataset_id)
+    unless @dataset
+      flash[:error] = "Dataset not found or inaccessible"
+      @error_flg = true
+      return
+    end
+
+    @table = @dataset.table(table_id)
+    unless @table
+      flash[:error] = "Table not found or inaccessible"
+      @error_flg = true
+      return
+    end
+    usecase = Bigquery::DeleteTableUsecase.new(@table)
+    result = usecase.call
+    if result[:success]
+      flash[:notice] = result[:message]
+    else
+      flash[:error] = result[:error]
+    end
+
+    redirect_to bigquery_table_path(project_id,dataset_id)
+
+  rescue StandardError => e
+    flash[:error] = "Failed to delete table. Please try again later. #{e.message}"
+    redirect_to bigquery_table_path(project_id,dataset_id)
+  end
+
 
   def show_schema
     project_id = params[:project_id]
     dataset_id = params[:dataset_id]
     table_id = params[:table_id]
 
-    result = validate_query(current_user.id, project_id, dataset_id,table_id: table_id)
+    result = validate_query(current_user.id, project_id: project_id, dataset_id: dataset_id,table_id: table_id)
     
     if result[:error]
       flash[:error] = result[:error]

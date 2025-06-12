@@ -9,15 +9,7 @@
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="transform: scale(0.7); margin-top: -4px;"></button>
     </div>
   <% end %>
-  
   <%= link_to "Back", bigquery_path, class: "btn btn-sm btn-success mb-3" %>
-
-  <% if flash[:alert] %>
-    <div class="alert alert-danger alert-dismissible fade show text-center small p-2" role="alert">
-      <%= flash[:alert] %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="transform: scale(0.7); margin-top: -4px;"></button>
-    </div>
-  <% end %>
 
   <%= form_with url: bigquery_create_table_path(project_id: @project_id, dataset_id: @dataset_id), method: :post, local: true do |f| %>
     <div class="mb-3">
