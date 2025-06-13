@@ -1,1 +1,73 @@
-<h1>Edit Schema Form</h1>
+<%= render 'layouts/navbar' %>
+
+<div class="container col-6">
+  <h2 class="text-center my-4">Editing Schema</h2>
+
+  <% if flash[:error] %>
+    <div class="alert alert-danger col-6 alert-dismissible fade show mx-auto text-center p-2 small" role="alert">
+      <%= flash[:error] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="transform: scale(0.7); margin-top: -4px;"></button>
+    </div>
+  <% end %>
+
+  <%= link_to "Back", bigquery_table_path(@project_id,@dataset_id), class: "btn btn-sm btn-success mb-3" %>
+
+  <%= form_with url: update_schema_path(project_id: @project_id, dataset_id: @dataset_id, table_id: @table_id), method: :patch, local: true do |form| %>
+    <div id="schema-fields">
+      <% @fields.each_with_index do |field, index| %>
+        <div class="row mb-2 schema-field">
+          <div class="col-5">
+            <%= text_field_tag "schema_fields[][name]", field[:name], class: "form-control", placeholder: "Field Name" %>
+          </div>
+          <div class="col-5">
+            <%= select_tag "schema_fields[][type]", options_for_select(BIGQUERY_SUPPORTED_TYPES, field[:type]), class: "form-select" %>
+          </div>
+          <div class="col-2">
+            <button type="button" class="btn btn-danger btn-sm remove-field">Remove</button>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="mb-3">
+      <button type="button" id="add-field" class="btn btn-secondary btn-sm">Add Field</button>
+    </div>
+    <div class="d-flex justify-content-end">
+      <%= form.submit "Update Schema", class: "btn btn-success d-flex flex-end" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const addButton = document.getElementById('add-field');
+    const fieldWrapper = document.getElementById('schema-fields');
+
+    addButton.addEventListener('click', function() {
+      const fieldHTML = `
+        <div class="row mb-2 schema-field">
+          <div class="col-5">
+            <input type="text" name="schema_fields[][name]" class="form-control" placeholder="Field Name">
+          </div>
+          <div class="col-5">
+            <select name="schema_fields[][type]" class="form-select">
+              <% BIGQUERY_SUPPORTED_TYPES.each do |type| %>
+                <option value="<%= type %>"><%= type %></option>
+              <% end %>
+            </select>
+          </div>
+          <div class="col-2">
+            <button type="button" class="btn btn-danger btn-sm remove-field">Remove</button>
+          </div>
+        </div>
+      `;
+      fieldWrapper.insertAdjacentHTML('beforeend', fieldHTML);
+    });
+
+    fieldWrapper.addEventListener('click', function(event) {
+      if (event.target.classList.contains('remove-field')) {
+        event.target.closest('.schema-field').remove();
+      }
+    });
+  });
+</script>

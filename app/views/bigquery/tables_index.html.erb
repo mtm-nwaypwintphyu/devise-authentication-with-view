@@ -48,10 +48,14 @@
           <td><%= table[:table_type	]%></td>
           <td><%= table[:expiration_time]%></td>
           <td>
-            <%= link_to "View Table", bigquery_table_detail_path(project_id: table[:project_id], dataset_id: table[:dataset_id], table_id: table[:table_id]), class: "btn btn-sm btn-secondary" %>
-            <%= link_to "Schema", bigquery_table_schema_path(project_id: table[:project_id], dataset_id: table[:dataset_id], table_id: table[:table_id]), class: "btn btn-sm btn-success" %>
+            <%= link_to "Data", bigquery_table_detail_path(project_id: table[:project_id], dataset_id: table[:dataset_id], table_id: table[:table_id]), class: "btn btn-sm col-12 mb-1 btn-secondary" %>
+            <br>
+            <%= link_to "Schema", bigquery_table_schema_path(project_id: table[:project_id], dataset_id: table[:dataset_id], table_id: table[:table_id]), class: "btn col-12 btn-sm mb-1 btn-success" %>
+            <br>
+            <%= link_to "Edit", bigquery_table_schema_edit_form_path(project_id: table[:project_id], dataset_id: table[:dataset_id], table_id: table[:table_id]), class: "btn col-12 btn-sm mb-1 btn-info" %>
+            <br>
             <%= form_with url: bigquery_delete_table_path(table[:project_id], table[:dataset_id], table[:table_id]), method: :post, class: "d-inline" do %>
-              <%= submit_tag "Delete", class: "btn btn-sm btn-danger", data: { confirm: "Are you sure you want to delete this table?" } %>
+              <%= submit_tag "Delete", class: "btn col-12 btn-sm mb-1 btn-danger", data: { confirm: "Are you sure you want to delete this table?" } %>
             <% end %>
           </td>
         </tr>

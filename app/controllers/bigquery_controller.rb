@@ -97,30 +97,6 @@ class BigqueryController < ApplicationController
   end
 
 
-  # =============== test create tables api 
-  def create_tables
-    project_id = params[:project_id]
-    dataset_id = params[:dataset_id]
-
-    begin
-      user = User.find_by(email: "mtm.nwaypwintphyu@gmail.com")
-      credentials = GoogleCredentialsService.new(user).credentials
-      bigquery = Google::Cloud::Bigquery.new(credentials: credentials, project: project_id)
-      dataset = bigquery.dataset(dataset_id)
-
-      100.times do |i|
-        table_id = "table_#{i + 01}"
-        dataset.create_table(table_id) do |t|
-          t.schema.string "name"
-        end
-      end
-      render json: { message: "Created 100 tables in project #{project_id}, dataset #{dataset_id}" }, status: :ok
-    rescue Google::Cloud::Error, StandardError => e
-      Rails.logger.error("BigQuery error: #{e.message}")
-      render json: { error: "Failed: #{e.message}" }, status: :internal_server_error
-    end
-  end
-
   # get table list
   def tables_index
     @project_id = params[:project_id]
@@ -233,7 +209,7 @@ class BigqueryController < ApplicationController
     table_id = params[:table_id]
     csv = params[:csv_file]
     
-    validate_result = validate_query(current_user.id, project_id, dataset_id)
+    validate_result = validate_query(current_user.id, project_id: project_id, dataset_id: dataset_id)
     
     if validate_result[:error]
       redirect_to new_bigquery_create_table_path(project_id,dataset_id) and return
@@ -367,10 +343,81 @@ class BigqueryController < ApplicationController
   end
 
   def edit_schema_form
-    p "hello"
+    @project_id = params["project_id"]
+    @dataset_id = params["dataset_id"]
+    @table_id = params["table_id"]
+
+    validate_result = validate_query(current_user.id, project_id: @project_id, dataset_id: @dataset_id)
+    usecase = Bigquery::GetSchemaUsecase.new(
+      current_user,
+      @project_id,
+      @dataset_id,
+      @table_id
+    )
+
+    result = Bigquery::GetSchemaUsecase.new(current_user, @project_id,  @dataset_id,@table_id).call 
+    
+    if result[:success]
+      @fields = result[:fields]
+      @table_id 
+      @project_id
+      @dataset_id
+      @error_flg = false
+    else
+      flash[:alert] = result[:error]
+    end
+
+    result
+  rescue => e
+    flash[:error] = "An unexpected error occurred. Please try again later.#{e}"
   end
 
- private
+  def update_schema
+    @project_id = params[:project_id]
+    @dataset_id = params[:dataset_id]
+    @table_id = params[:table_id]
+    @schema_fields = schema_params[:schema_fields] || []
+
+    validate_result = validate_query(current_user.id, project_id: @project_id, dataset_id: @dataset_id,table_id: @table_id)
+    unless validate_result[:success] && validate_result[:bigquery]
+      flash[:error] = validate_result[:error] || "Validation failed"
+      @error_flg = true
+      return
+    end
+
+    @bigquery = validate_result[:bigquery]
+    @dataset = @bigquery.dataset(@dataset_id)
+    unless @dataset
+      flash[:error] = "Dataset not found or inaccessible"
+      @error_flg = true
+      return
+    end
+
+    @table = @dataset.table(@table_id)
+
+    unless @table
+      flash[:error] = "Table not found or inaccessible"
+      @error_flg = true
+      return
+    end
+
+    usecase = Bigquery::UpdateSchemaUsecase.new(@bigquery,@dataset_id,@table_id,@schema_fields)
+    result = usecase.call
+    if result[:success]
+      flash[:notice] = result[:message]
+      redirect_to bigquery_table_path(@project_id, @dataset_id)
+    else
+      flash[:error] = result[:error]
+      redirect_to bigquery_table_schema_edit_form_path(@project_id, @dataset_id)
+    end
+  rescue StandardError => e
+    Rails.logger.error("Error in update_schema: #{e.message}")
+    flash[:error] = "An unexpected error occurred while updating the table. Please try again.#{e}"
+    redirect_to bigquery_table_schema_edit_form_path(@project_id, @dataset_id)
+  end
+
+
+  private
 
   def check_google_tokens
     if current_user.google_oauth2_token.blank? || token_expired?

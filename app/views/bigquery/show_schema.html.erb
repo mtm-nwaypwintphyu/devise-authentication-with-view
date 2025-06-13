@@ -20,7 +20,6 @@
           <th>Name</th>
           <th>Type</th>
           <th>Mode</th>
-          <th>Action</th>
         </tr>
       </thead>
       <tbody>
@@ -37,8 +36,14 @@
             <% field[:fields].each do |f| %>
               <tr>
                 <td><%= "#{field[:name]} [#{f[:name]}]" %></td>
-                <td><%= f[:type] %></td>
-                <td><%= f[:mode] %></td>
+                <td><%= field[:type] %></td>
+                <td>
+                  <% if field[:mode] %>
+                    <%= field[:mode] %>
+                  <% else  %>
+                    NULLABLE
+                  <% end %>
+                </td>
                 <td>
                   <%= link_to "Edit", bigquery_table_schema_edit_form_path(params[:project_id], params[:dataset_id]), class: "btn btn-sm btn-secondary" %>
                 </td>
@@ -48,8 +53,13 @@
             <tr>
               <td><%= field[:name] %></td>
               <td><%= field[:type] %></td>
-              <td><%= field[:mode] %></td>
-              <td></td>
+              <td>
+                <% if field[:mode] %>
+                  <%= field[:mode] %>
+                <% else  %>
+                  NULLABLE
+                <% end %>
+              </td>
             </tr>
           <% end %>
         <% end %>

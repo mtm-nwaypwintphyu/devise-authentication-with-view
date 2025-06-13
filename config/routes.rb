@@ -54,6 +54,8 @@ Rails.application.routes.draw do
   get 'bigquery/datasets/:project_id/:dataset_id/tables/:table_id', to: 'bigquery#show_table', as: 'bigquery_table_detail'
   get 'bigquery/datasets/schema/:project_id/:dataset_id/tables/:table_id', to: 'bigquery#show_schema', as: 'bigquery_table_schema'
   get 'bigquery/datasets/schema/edit/:project_id/:dataset_id/tables/:table_id', to: 'bigquery#edit_schema_form', as: 'bigquery_table_schema_edit_form'
+  patch 'bigquery/update_schema/:project_id/:dataset_id/:table_id', to: 'bigquery#update_schema', as: 'update_schema'
+
   get 'bigquery/create_table/:project_id/:dataset_id', to: 'bigquery#new_create_table', as: 'new_bigquery_create_table'
   post 'bigquery/create_table/:project_id/:dataset_id', to: 'bigquery#create_table', as: 'bigquery_create_table'
   get 'bigquery/upload_table/:project_id/:dataset_id', to: 'bigquery#upload_table_form', as: 'bigquery_upload_table_form'
