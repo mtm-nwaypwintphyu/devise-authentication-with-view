@@ -2,7 +2,6 @@
 class BigqueryController < ApplicationController
   before_action :authenticate_user!
   before_action :check_google_tokens
-  skip_before_action :verify_authenticity_token, only: [ :create_tables]
   include ::ValidateBigquery
 
   # get datasets
